@@ -1,0 +1,79 @@
+[gd_scene load_steps=7 format=3 uid="uid://gj0i45h5x1ae"]
+
+[ext_resource type="Script" path="res://UnitAssets/unit.gd" id="1_iqde3"]
+[ext_resource type="Texture2D" uid="uid://dd7gxvna3x6hb" path="res://UnitAssets/unit_shadow.bmp" id="2_cc6p0"]
+
+[sub_resource type="Animation" id="Animation_7sf2v"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathFollow2D/UnitSprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_1lj4i"]
+resource_name = "idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathFollow2D/UnitSprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_3pwnk"]
+resource_name = "selected"
+length = 1.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathFollow2D/UnitSprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0666667, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1.5, 1.5, 1.5, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yuary"]
+_data = {
+"RESET": SubResource("Animation_7sf2v"),
+"idle": SubResource("Animation_1lj4i"),
+"selected": SubResource("Animation_3pwnk")
+}
+
+[node name="Unit" type="Path2D"]
+script = ExtResource("1_iqde3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_yuary")
+}
+autoplay = "idle"
+
+[node name="PathFollow2D" type="PathFollow2D" parent="."]
+rotates = false
+loop = false
+
+[node name="ShadowSprite" type="Sprite2D" parent="PathFollow2D"]
+modulate = Color(0.968627, 0.945098, 0.713726, 0.537255)
+position = Vector2(-4, 22)
+texture = ExtResource("2_cc6p0")
+
+[node name="UnitSprite" type="Sprite2D" parent="PathFollow2D"]
+scale = Vector2(6, 6)

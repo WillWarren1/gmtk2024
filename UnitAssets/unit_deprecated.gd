@@ -2,6 +2,8 @@ extends Node2D
 
 @onready var tile_map = $"../TileMap"
 
+@export var playerControllable: bool
+
 var astarGrid: AStarGrid2D
 var currentIdPath: Array[Vector2i]
 var currentPointPath: PackedVector2Array
@@ -33,7 +35,7 @@ func _ready() -> void:
 
 func _input(event) -> void:
 #	don't move if no move
-	if event.is_action_pressed("move") == false:
+	if event.is_action_pressed("move") == false || playerControllable == false:
 		return
 
 	var id_path
