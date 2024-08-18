@@ -1,6 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://cg5abwfbofgth"]
+[gd_scene load_steps=8 format=3 uid="uid://uqcm7ckaicr7"]
 
-[ext_resource type="PackedScene" uid="uid://cc7h37h3nv606" path="res://Background/Map.tscn" id="1_f304e"]
+[ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
 [ext_resource type="Script" path="res://game_board.gd" id="2_o4r1v"]
 [ext_resource type="PackedScene" uid="uid://ixme7eh3gids" path="res://UnitAssets/UnitOverlay/unit_overlay.tscn" id="3_qaid1"]
 [ext_resource type="PackedScene" uid="uid://ukn87x0yagba" path="res://Pathfinder/unit_path.tscn" id="4_4j1ps"]
@@ -10,9 +10,7 @@
 
 [node name="Main" type="Node2D"]
 
-[node name="Map" parent="." instance=ExtResource("1_f304e")]
-rendering_quadrant_size = 16
-navigation_visibility_mode = 1
+[node name="TileMap" parent="." instance=ExtResource("1_4ugnn")]
 
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true

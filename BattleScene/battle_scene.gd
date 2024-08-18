@@ -31,11 +31,11 @@ func _ready():
 	defPaney = defPane.position.y
 	atkPane.position.y -= 500
 	defPane.position.y += 500
-	
+
 	atkStr = attacker.statsController.stats.weaponDamage
 	atkHpMax = attacker.statsController.stats.maxHealth
 	atkHpCurr = attacker.statsController.stats.currentHealth
-	
+
 	defStr = defender.statsController.stats.weaponDamage
 	defDefense = defender.statsController.stats.defense
 	defHpMax = defender.statsController.stats.maxHealth
@@ -46,7 +46,7 @@ func _process(delta):
 	atkHpCurrLabel.text = str(atkHpCurr)
 	defHpCurrLabel.text = str(defHpCurr)
 
-	
+
 	match step:
 		0:
 			atkPane.position.y += 10

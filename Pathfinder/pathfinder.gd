@@ -24,6 +24,8 @@ func _init(grid: Grid, walkable_cells: Array) -> void:
 	for cell in walkable_cells:
 		# For each cell, we define a key-value pair of cell coordinates: index.
 		cell_mappings[cell] = _grid.as_index(cell)
+
+
 	# We then add all the cells to our AStar2D instance and connect them to create our pathfinding
 	# graph.
 	_add_and_connect_points(cell_mappings)

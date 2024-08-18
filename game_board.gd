@@ -67,6 +67,7 @@ func get_walkable_cells(unit: Unit) -> Array:
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
 func _flood_fill(cell: Vector2, max_distance: int) -> Array:
+	print("floodfill start", cell)
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
 	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
@@ -83,6 +84,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		# 2. We haven't already visited and filled this cell
 		# 3. We are within the `max_distance`, a number of cells.
 		if not grid.is_within_bounds(current):
+			print("not within bounds", current)
 			continue
 		if current in array:
 			continue
@@ -90,6 +92,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		# This is where we check for the distance between the starting `cell` and the `current` one.
 		var difference: Vector2 = (current - cell).abs()
 		var distance := int(difference.x + difference.y)
+		print("distance", distance, "max_distance", max_distance)
 		if distance > max_distance:
 			continue
 
@@ -131,6 +134,7 @@ func _select_active_unit(cell: Vector2) -> void:
 		_active_unit = _units[cell]
 		_active_unit.isSelected = true
 		_walkable_cells = get_walkable_cells(_active_unit)
+		print('overlay walkable cells', _walkable_cells)
 		_unit_overlay.draw(_walkable_cells)
 		_unit_path.initialize(_walkable_cells)
 		print("selected player controllable unit")

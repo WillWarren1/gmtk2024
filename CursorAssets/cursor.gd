@@ -44,6 +44,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		print("unhandled")
 		#  In that case, we emit a signal to let another node handle that input. The game board will
 		#  have the responsibility of looking at the cell's content.
+		print("cell clicked", cell)
 		emit_signal("accept_pressed", cell)
 		get_viewport().set_input_as_handled()
 
@@ -85,6 +86,6 @@ func set_cell(value: Vector2) -> void:
 	# If we move to a new cell, we update the cursor's position, emit a signal, and start the
 	# cooldown timer that will limit the rate at which the cursor moves when we keep the direction
 	# key down.
-	position = floor(grid.calculate_map_position(cell))
+	position = grid.calculate_map_position(cell)
 	emit_signal("moved", cell)
 	_timer.start()

@@ -17,6 +17,7 @@ var current_path := PackedVector2Array()
 # among the `walkable_cells`.
 # We'll call this function every time the player selects a unit.
 func initialize(walkable_cells: Array) -> void:
+	print("initialize unit path, walkable cells:", walkable_cells)
 	_pathfinder = PathFinder.new(grid, walkable_cells)
 
 
