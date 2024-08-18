@@ -6,9 +6,7 @@ signal walk_finished
 
 @export var grid: Resource = preload("res://Grid.tres")
 @export var skin: Texture: set = set_skin
-@export var moveRange := 6
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
-@export var moveSpeed := 600.0
 @export var isPlayerControllable := false
 
 var cell := Vector2.ZERO: set = set_cell
@@ -19,6 +17,7 @@ var isWalking := false: set = _set_is_walking
 @onready var _sprite: Sprite2D = $PathFollow2D/UnitSprite
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
+@onready var statsController: Node2D = $Stats
 
 
 func _ready() -> void:
@@ -36,7 +35,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_path_follow.progress += moveSpeed * delta
+	_path_follow.progress += statsController.stats.speed * delta
 
 	if _path_follow.progress_ratio >= 1.0:
 		self.isWalking = false

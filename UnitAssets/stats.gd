@@ -1,14 +1,17 @@
 extends Node
 
 @export var stats = {
-	"weaponRange":0,
-	"weaponDamage":0,
-	"movementRange":0,
+	"weaponRange":3,
+	"meleeRange":1,
+	"weaponDamage":3,
+	"meleeDamage":1,
+	"movementRange":6,
+	"speed":600.0,
 	"maxHealth":0,
-	"currentHealth":0,
-	"size":0,
-	"currentAmmo":0,
-	"maxAmmo":0
+	"currentHealth":10,
+	"size":1,
+	"currentAmmo":6,
+	"maxAmmo":6
 }
 
 func edit_stat(stat, amount):

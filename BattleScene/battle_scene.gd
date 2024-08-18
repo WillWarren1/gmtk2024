@@ -6,6 +6,9 @@ extends Node2D
 @onready var atkHpCurrLabel = $AttackerPane/AttackerPanel/CurrHealthLabel
 @onready var defHpCurrLabel = $DefenderPane/DefenderPanel/CurrHealthLabel
 
+var attacker: Unit = null
+var defender: Unit = null
+
 var atkHpMax = 10
 var atkHpCurr = 10
 var atkStr = 1
@@ -31,12 +34,12 @@ func _ready():
 func _process(delta):
 	atkHpCurrLabel.text = str(atkHpCurr)
 	defHpCurrLabel.text = str(defHpCurr)
-	
+
 	match step:
 		0:
 			atkPane.position.y += 10
 			defPane.position.y -= 10
-			
+
 			if atkPane.position.y >= atkPaney:
 				atkPane.position.y = atkPaney
 				defPane.position.y = defPaney
@@ -57,7 +60,7 @@ func _process(delta):
 				step = 5
 		5:
 			var ifHit = [0,1].pick_random()
-			
+
 			if ifHit == 0:
 				step = 10
 			else:
