@@ -140,6 +140,8 @@ func _select_target_unit(cell: Vector2) -> void:
 	# registered in the `cell`.
 	if not _units.has(cell):
 		return
+	if _units[cell].isPlayerControllable == true:
+		return
 	print("Checking AttackRange...")
 	var distance = floor(_active_unit.cell.distance_to(cell))
 	print("distance", distance)
@@ -157,6 +159,8 @@ func _select_target_unit(cell: Vector2) -> void:
 		print("within melee range")
 		var combatInstance = combatScene.instantiate()
 		combatInstance.position = get_viewport_rect().size / 2
+		combatInstance.attacker = _active_unit
+		combatInstance.defender = _units[cell]
 		add_child(combatInstance)
 
 # Deselects the active unit, clearing the cells overlay and interactive path drawing.

@@ -16,6 +16,7 @@ var atkStr = 1
 var defHpMax = 10
 var defHpCurr = 10
 var defStr = 1
+var defDefense
 
 var step = 0
 
@@ -36,6 +37,7 @@ func _ready():
 	atkHpCurr = attacker.statsController.stats.currentHealth
 	
 	defStr = defender.statsController.stats.weaponDamage
+	defDefense = defender.statsController.stats.defense
 	defHpMax = defender.statsController.stats.maxHealth
 	defHpCurr = defender.statsController.stats.currentHealth
 
@@ -69,14 +71,14 @@ func _process(delta):
 			if counter >= 10:
 				step = 5
 		5:
-			var ifHit = [0,1].pick_random()
+			var ifHit = d6()
 
-			if ifHit == 0:
+			if ifHit <= defDefense:
 				step = 8
 			else:
 				step = 6
 		6:
-			readoutPanel.text = "ATTACKER HITS"
+			readoutPanel.text = "ATTACKER HITS FOR " + str(atkStr)
 			await get_tree().create_timer(.5).timeout
 			step = 7
 		7:
@@ -86,10 +88,17 @@ func _process(delta):
 				damageDone = true
 			step = 10
 		8:
-			readoutPanel.text = "ATTACKER MISSES"
+			readoutPanel.text = "ATTACKER GRAZES FOR 1"
+			if damageDone == false:
+				defHpCurr -= atkStr
+				defender.statsController.stats.currentHealth = defHpCurr
+				damageDone = true
 			step = 10
 		10:
 			await get_tree().create_timer(.5).timeout
 			step = 11
 		11:
 			queue_free()
+
+func d6() -> int:
+	return [1,2,3,4,5,6].pick_random()
