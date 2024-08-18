@@ -1,0 +1,100 @@
+[gd_scene load_steps=6 format=3 uid="uid://c7ufa2mpjjlj7"]
+
+[ext_resource type="Script" path="res://battle_scene.gd" id="1_ca6ap"]
+[ext_resource type="Texture2D" uid="uid://dnwju1bnlq8mc" path="res://icon.svg" id="2_saqbf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ck7sa"]
+font_size = 32
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0amgm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_saqbf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_pk2s1"]
+font_size = 32
+
+[node name="BattleScene" type="Node2D"]
+script = ExtResource("1_ca6ap")
+
+[node name="AttackerPane" type="Node2D" parent="."]
+
+[node name="AttackerPanel" type="Panel" parent="AttackerPane"]
+offset_left = 146.0
+offset_right = 496.0
+offset_bottom = 502.0
+
+[node name="CurrHealthLabel" type="Label" parent="AttackerPane/AttackerPanel"]
+layout_mode = 0
+offset_left = 105.0
+offset_top = 451.0
+offset_right = 168.0
+offset_bottom = 502.0
+text = "10"
+label_settings = SubResource("LabelSettings_ck7sa")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MaxHealthLabel" type="Label" parent="AttackerPane/AttackerPanel"]
+layout_mode = 0
+offset_left = 186.0
+offset_top = 451.0
+offset_right = 249.0
+offset_bottom = 502.0
+text = "10"
+label_settings = SubResource("LabelSettings_ck7sa")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AttackerPane/AttackerPanel"]
+position = Vector2(175, 237)
+sprite_frames = SubResource("SpriteFrames_0amgm")
+
+[node name="DefenderPane" type="Node2D" parent="."]
+
+[node name="DefenderPanel" type="Panel" parent="DefenderPane"]
+offset_left = 647.0
+offset_top = 144.0
+offset_right = 997.0
+offset_bottom = 646.0
+
+[node name="CurrHealthLabel" type="Label" parent="DefenderPane/DefenderPanel"]
+layout_mode = 0
+offset_left = 105.0
+offset_top = 451.0
+offset_right = 168.0
+offset_bottom = 502.0
+text = "10"
+label_settings = SubResource("LabelSettings_ck7sa")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MaxHealthLabel" type="Label" parent="DefenderPane/DefenderPanel"]
+layout_mode = 0
+offset_left = 186.0
+offset_top = 451.0
+offset_right = 249.0
+offset_bottom = 502.0
+text = "10"
+label_settings = SubResource("LabelSettings_ck7sa")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="DefenderPane/DefenderPanel"]
+position = Vector2(175, 237)
+sprite_frames = SubResource("SpriteFrames_0amgm")
+
+[node name="BattleMessage" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 529.0
+offset_right = 625.0
+offset_bottom = 637.0
+label_settings = SubResource("LabelSettings_pk2s1")
+horizontal_alignment = 1
+vertical_alignment = 1
