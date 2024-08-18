@@ -61,8 +61,7 @@ func _process(delta):
 		scale = Vector2(.875,.875)
 	elif camera.zoom_level == 1:
 		scale = Vector2(1,1)
-	
-	readoutPanel.text = str(camera.zoom_level) + " " + str(scale)
+
 	
 	match step:
 		0:
