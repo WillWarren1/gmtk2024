@@ -15,7 +15,7 @@ var atkStr = 1
 
 var defHpMax = 10
 var defHpCurr = 10
-var defDef = 1
+var defStr = 1
 
 var step = 0
 
@@ -32,13 +32,19 @@ func _ready():
 	defPane.position.y += 500
 	
 	atkStr = attacker.statsController.stats.weaponDamage
+	atkHpMax = attacker.statsController.stats.maxHealth
+	atkHpCurr = attacker.statsController.stats.currentHealth
+	
+	defStr = defender.statsController.stats.weaponDamage
+	defHpMax = defender.statsController.stats.maxHealth
+	defHpCurr = defender.statsController.stats.currentHealth
 
 
 func _process(delta):
 	atkHpCurrLabel.text = str(atkHpCurr)
 	defHpCurrLabel.text = str(defHpCurr)
 
-
+	
 	match step:
 		0:
 			atkPane.position.y += 10
@@ -76,6 +82,7 @@ func _process(delta):
 		7:
 			if damageDone == false:
 				defHpCurr -= atkStr
+				defender.statsController.stats.currentHealth = defHpCurr
 				damageDone = true
 			step = 10
 		8:

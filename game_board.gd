@@ -151,6 +151,7 @@ func _select_target_unit(cell: Vector2) -> void:
 		var combatInstance = combatScene.instantiate()
 		combatInstance.position = get_viewport_rect().size / 2
 		combatInstance.attacker = _active_unit
+		combatInstance.defender = _units[cell]
 		add_child(combatInstance)
 	elif distance <= meleeRange:
 		print("within melee range")
