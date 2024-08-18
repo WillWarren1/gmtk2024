@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://gj0i45h5x1ae"]
+[gd_scene load_steps=8 format=3 uid="uid://gj0i45h5x1ae"]
 
 [ext_resource type="Script" path="res://UnitAssets/unit.gd" id="1_iqde3"]
 [ext_resource type="Texture2D" uid="uid://dd7gxvna3x6hb" path="res://UnitAssets/unit_shadow.bmp" id="2_cc6p0"]
+[ext_resource type="Script" path="res://UnitAssets/stats.gd" id="3_e8j2y"]
 
 [sub_resource type="Animation" id="Animation_7sf2v"]
 length = 0.001
@@ -78,3 +79,6 @@ texture = ExtResource("2_cc6p0")
 
 [node name="UnitSprite" type="Sprite2D" parent="PathFollow2D"]
 scale = Vector2(2, 2)
+
+[node name="Stats" type="Node2D" parent="."]
+script = ExtResource("3_e8j2y")
