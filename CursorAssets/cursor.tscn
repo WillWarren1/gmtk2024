@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7mwedqteqa0g"]
+
+[ext_resource type="Script" path="res://CursorAssets/cursor.gd" id="1_bk7wb"]
+[ext_resource type="Texture2D" uid="uid://blkb7i20jxch0" path="res://CursorAssets/cursor.bmp" id="1_q2rqe"]
+[ext_resource type="Texture2D" uid="uid://b17d8t82fsp7u" path="res://CursorAssets/target.bmp" id="3_n5ljf"]
+
+[node name="Cursor" type="Node2D"]
+script = ExtResource("1_bk7wb")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="target" type="Sprite2D" parent="."]
+texture = ExtResource("3_n5ljf")
+
+[node name="CursorSprite" type="Sprite2D" parent="."]
+position = Vector2(15, -15)
+texture = ExtResource("1_q2rqe")
