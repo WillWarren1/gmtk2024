@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://c7ufa2mpjjlj7"]
 
-[ext_resource type="Script" path="res://battle_scene.gd" id="1_ca6ap"]
+[ext_resource type="Script" path="res://BattleScene/battle_scene.gd" id="1_ca6ap"]
 [ext_resource type="Texture2D" uid="uid://dnwju1bnlq8mc" path="res://icon.svg" id="2_saqbf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ck7sa"]
@@ -26,9 +26,11 @@ script = ExtResource("1_ca6ap")
 [node name="AttackerPane" type="Node2D" parent="."]
 
 [node name="AttackerPanel" type="Panel" parent="AttackerPane"]
-offset_left = 146.0
-offset_right = 496.0
-offset_bottom = 502.0
+offset_left = -424.0
+offset_top = -276.0
+offset_right = -74.0
+offset_bottom = 226.0
+metadata/_edit_use_anchors_ = true
 
 [node name="CurrHealthLabel" type="Label" parent="AttackerPane/AttackerPanel"]
 layout_mode = 0
@@ -40,6 +42,7 @@ text = "10"
 label_settings = SubResource("LabelSettings_ck7sa")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="MaxHealthLabel" type="Label" parent="AttackerPane/AttackerPanel"]
 layout_mode = 0
@@ -51,6 +54,7 @@ text = "10"
 label_settings = SubResource("LabelSettings_ck7sa")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AttackerPane/AttackerPanel"]
 position = Vector2(175, 237)
@@ -59,10 +63,11 @@ sprite_frames = SubResource("SpriteFrames_0amgm")
 [node name="DefenderPane" type="Node2D" parent="."]
 
 [node name="DefenderPanel" type="Panel" parent="DefenderPane"]
-offset_left = 647.0
-offset_top = 144.0
-offset_right = 997.0
-offset_bottom = 646.0
+offset_left = 81.0
+offset_top = -132.0
+offset_right = 431.0
+offset_bottom = 370.0
+metadata/_edit_use_anchors_ = true
 
 [node name="CurrHealthLabel" type="Label" parent="DefenderPane/DefenderPanel"]
 layout_mode = 0
@@ -74,6 +79,7 @@ text = "10"
 label_settings = SubResource("LabelSettings_ck7sa")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="MaxHealthLabel" type="Label" parent="DefenderPane/DefenderPanel"]
 layout_mode = 0
@@ -85,16 +91,17 @@ text = "10"
 label_settings = SubResource("LabelSettings_ck7sa")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="DefenderPane/DefenderPanel"]
 position = Vector2(175, 237)
 sprite_frames = SubResource("SpriteFrames_0amgm")
 
 [node name="BattleMessage" type="Label" parent="."]
-offset_left = 16.0
-offset_top = 529.0
-offset_right = 625.0
-offset_bottom = 637.0
+offset_left = -609.0
+offset_top = 263.0
+offset_bottom = 371.0
 label_settings = SubResource("LabelSettings_pk2s1")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true

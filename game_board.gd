@@ -4,6 +4,12 @@
 class_name GameBoard
 extends Node2D
 
+# Once again, we use our grid resource that we explicitly define in the class.
+@export var grid: Resource = preload("res://Grid.tres")
+@export var combatScene: PackedScene = preload("res://BattleScene/battle_scene.tscn")
+@onready var _unit_path: UnitPath = $UnitPath
+@onready var _unit_overlay: UnitOverlay = $UnitOverlay
+
 # This constant represents the directions in which a unit can move on the board. We will reference
 # the constant later in the script.
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
@@ -14,12 +20,6 @@ var _active_unit: Unit
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
-
-@onready var _unit_path: UnitPath = $UnitPath
-
-# Once again, we use our grid resource that we explicitly define in the class.
-@export var grid: Resource = preload("res://Grid.tres")
-@onready var _unit_overlay: UnitOverlay = $UnitOverlay
 
 
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
@@ -62,7 +62,7 @@ func _reinitialize() -> void:
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
 func get_walkable_cells(unit: Unit) -> Array:
-	return _flood_fill(unit.cell, unit.moveRange)
+	return _flood_fill(unit.cell, unit.statsController.stats.movementRange)
 
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
@@ -140,9 +140,28 @@ func _select_target_unit(cell: Vector2) -> void:
 	# registered in the `cell`.
 	if not _units.has(cell):
 		return
+	if _units[cell].isPlayerControllable == true:
+		return
 	print("Checking AttackRange...")
-	print("No Stats found for Active Unit")
-	print("No Combat Node found to trigger")
+	var distance = floor(_active_unit.cell.distance_to(cell))
+	print("distance", distance)
+	var weaponRange = _active_unit.statsController.stats.weaponRange
+	var meleeRange = _active_unit.statsController.stats.meleeRange
+	print("weaponRange", weaponRange)
+	if distance <= weaponRange && distance > meleeRange:
+		print("within weapon range")
+		var combatInstance = combatScene.instantiate()
+		combatInstance.position = get_viewport_rect().size / 2
+		combatInstance.attacker = _active_unit
+		combatInstance.defender = _units[cell]
+		add_child(combatInstance)
+	elif distance <= meleeRange:
+		print("within melee range")
+		var combatInstance = combatScene.instantiate()
+		combatInstance.position = get_viewport_rect().size / 2
+		combatInstance.attacker = _active_unit
+		combatInstance.defender = _units[cell]
+		add_child(combatInstance)
 
 # Deselects the active unit, clearing the cells overlay and interactive path drawing.
 # We need it for the `_move_active_unit()` function below, and we'll use it again in a moment.
