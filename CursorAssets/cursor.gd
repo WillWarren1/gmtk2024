@@ -32,12 +32,13 @@ var cell := Vector2.ZERO: set = set_cell
 func _ready() -> void:
 	_timer.wait_time = ui_cooldown
 	position = grid.calculate_map_position(cell)
+	print("GRID SIZE STARTS AT ",grid.size.x)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	# If the user moves the mouse, we capture that input and update the node's cell in priority.
 	if event is InputEventMouseMotion:
-		cell = grid.calculate_grid_coordinates(event.position)
+		cell = grid.calculate_grid_coordinates(get_global_mouse_position())
 	# If we are already hovering the cell and click on it, or we press the enter key, the player
 	# wants to interact with that cell.
 	elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
@@ -87,5 +88,7 @@ func set_cell(value: Vector2) -> void:
 	# cooldown timer that will limit the rate at which the cursor moves when we keep the direction
 	# key down.
 	position = grid.calculate_map_position(cell)
+	print(cell)
+	print(position)
 	emit_signal("moved", cell)
 	_timer.start()

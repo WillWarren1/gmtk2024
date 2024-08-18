@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://gj0i45h5x1ae"]
+[gd_scene load_steps=9 format=3 uid="uid://gj0i45h5x1ae"]
 
 [ext_resource type="Script" path="res://UnitAssets/unit.gd" id="1_iqde3"]
 [ext_resource type="Texture2D" uid="uid://dd7gxvna3x6hb" path="res://UnitAssets/unit_shadow.bmp" id="2_cc6p0"]
+[ext_resource type="Texture2D" uid="uid://bx8noq1nurm4t" path="res://UnitAssets/soldier.bmp" id="3_53bvl"]
 [ext_resource type="Script" path="res://UnitAssets/stats.gd" id="3_e8j2y"]
 
 [sub_resource type="Animation" id="Animation_7sf2v"]
@@ -73,12 +74,12 @@ loop = false
 
 [node name="ShadowSprite" type="Sprite2D" parent="PathFollow2D"]
 modulate = Color(0.968627, 0.945098, 0.713726, 0.537255)
-position = Vector2(-8, 10)
-scale = Vector2(2, 2)
+position = Vector2(0, 10)
 texture = ExtResource("2_cc6p0")
 
 [node name="UnitSprite" type="Sprite2D" parent="PathFollow2D"]
-scale = Vector2(2, 2)
+position = Vector2(3, -12)
+texture = ExtResource("3_53bvl")
 
 [node name="Stats" type="Node2D" parent="."]
 script = ExtResource("3_e8j2y")
