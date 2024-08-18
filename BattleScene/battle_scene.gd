@@ -1,4 +1,6 @@
-extends Node2D
+extends Control
+
+var camera
 
 @onready var atkPane = $AttackerPane
 @onready var defPane = $DefenderPane
@@ -40,13 +42,28 @@ func _ready():
 	defDefense = defender.statsController.stats.defense
 	defHpMax = defender.statsController.stats.maxHealth
 	defHpCurr = defender.statsController.stats.currentHealth
+	camera = get_tree().get_first_node_in_group("Camera")
 
 
 func _process(delta):
 	atkHpCurrLabel.text = str(atkHpCurr)
 	defHpCurrLabel.text = str(defHpCurr)
-
-
+	
+	global_position = camera.global_position
+	
+	if camera.zoom_level == 2:
+		scale = Vector2(.5,.5)
+	elif camera.zoom_level == 1.75:
+		scale = Vector2(.625,.625)
+	elif camera.zoom_level == 1.5:
+		scale = Vector2(.75,.75)
+	elif camera.zoom_level == 1.25:
+		scale = Vector2(.875,.875)
+	elif camera.zoom_level == 1:
+		scale = Vector2(1,1)
+	
+	readoutPanel.text = str(camera.zoom_level) + " " + str(scale)
+	
 	match step:
 		0:
 			atkPane.position.y += 10
@@ -98,7 +115,8 @@ func _process(delta):
 			await get_tree().create_timer(.5).timeout
 			step = 11
 		11:
-			queue_free()
+			#queue_free()
+			pass
 
 func d6() -> int:
 	return [1,2,3,4,5,6].pick_random()

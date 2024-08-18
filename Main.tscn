@@ -31,7 +31,7 @@ position = Vector2(-22, 18)
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(944, 584)
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)
 script = ExtResource("7_1ow0n")
 
