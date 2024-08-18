@@ -27,7 +27,7 @@ func calculate_map_position(grid_position: Vector2) -> Vector2:
 # the grid coordinates they're placed on, and call `calculate_map_position()` to snap them to the
 # cell's center.
 func calculate_grid_coordinates(map_position: Vector2) -> Vector2:
-	return (map_position / cell_size).floor()
+	return floor(map_position / cell_size)
 
 
 # Returns true if the `cell_coordinates` are within the grid.

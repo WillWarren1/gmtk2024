@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2j5n23lvhmw1"
-path="res://.godot/imported/squirrel.png-6546ad2d79ef3073977359f048e5a652.ctex"
+uid="uid://b17d8t82fsp7u"
+path="res://.godot/imported/target.bmp-7c15d2f9021badeaed24feff0229c420.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UnitAssets/squirrel.png"
-dest_files=["res://.godot/imported/squirrel.png-6546ad2d79ef3073977359f048e5a652.ctex"]
+source_file="res://CursorAssets/target.bmp"
+dest_files=["res://.godot/imported/target.bmp-7c15d2f9021badeaed24feff0229c420.ctex"]
 
 [params]
 

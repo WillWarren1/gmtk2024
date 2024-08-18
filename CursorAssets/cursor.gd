@@ -37,11 +37,11 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	# If the user moves the mouse, we capture that input and update the node's cell in priority.
 	if event is InputEventMouseMotion:
-		print(grid.calculate_grid_coordinates(event.position))
-		self.cell = grid.calculate_grid_coordinates(event.position)
+		cell = grid.calculate_grid_coordinates(event.position)
 	# If we are already hovering the cell and click on it, or we press the enter key, the player
 	# wants to interact with that cell.
 	elif event.is_action_pressed("click") or event.is_action_pressed("ui_accept"):
+		print("unhandled")
 		#  In that case, we emit a signal to let another node handle that input. The game board will
 		#  have the responsibility of looking at the cell's content.
 		emit_signal("accept_pressed", cell)
@@ -63,21 +63,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Here, we update the cursor's current cell based on the input direction. See the set_cell()
 	# function below to see what changes that triggers.
 	if event.is_action("ui_right"):
-		self.cell += Vector2.RIGHT
+		cell += Vector2.RIGHT
 	elif event.is_action("ui_up"):
-		self.cell += Vector2.UP
+		cell += Vector2.UP
 	elif event.is_action("ui_left"):
-		self.cell += Vector2.LEFT
+		cell += Vector2.LEFT
 	elif event.is_action("ui_down"):
-		self.cell += Vector2.DOWN
+		cell += Vector2.DOWN
 
-
-# We use the draw callback to a rectangular outline the size of a grid cell, with a width of two
-# pixels.
-func _draw() -> void:
-	# Rect2 is built from the position of the rectangle's top-left corner and its size. To draw the
-	# square around the cell, the start position needs to be `-grid.cell_size / 2`.
-	draw_rect(Rect2(-grid.cell_size / 2, grid.cell_size), Color.ALICE_BLUE, false, 2.0)
 
 
 # This function controls the cursor's current position.
@@ -92,6 +85,6 @@ func set_cell(value: Vector2) -> void:
 	# If we move to a new cell, we update the cursor's position, emit a signal, and start the
 	# cooldown timer that will limit the rate at which the cursor moves when we keep the direction
 	# key down.
-	position = grid.calculate_map_position(cell)
+	position = floor(grid.calculate_map_position(cell))
 	emit_signal("moved", cell)
 	_timer.start()
