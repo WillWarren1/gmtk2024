@@ -245,19 +245,18 @@ offset_left = 105.0
 offset_top = 451.0
 offset_right = 168.0
 offset_bottom = 502.0
-text = "10"
 label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="MaxHealthLabel" type="Label" parent="AttackerPane/AttackerPanel"]
+visible = false
 layout_mode = 0
 offset_left = 186.0
 offset_top = 451.0
 offset_right = 249.0
 offset_bottom = 502.0
-text = "10"
 label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -280,6 +279,7 @@ text = "HP-"
 label_settings = ExtResource("2_m3j3s")
 
 [node name="Label2" type="Label" parent="AttackerPane/AttackerPanel"]
+visible = false
 layout_mode = 0
 offset_left = 239.0
 offset_top = 454.0
@@ -304,19 +304,18 @@ offset_left = 105.0
 offset_top = 451.0
 offset_right = 168.0
 offset_bottom = 502.0
-text = "10"
 label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="MaxHealthLabel" type="Label" parent="DefenderPane/DefenderPanel"]
+visible = false
 layout_mode = 0
 offset_left = 186.0
 offset_top = 451.0
 offset_right = 249.0
 offset_bottom = 502.0
-text = "10"
 label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -339,6 +338,7 @@ text = "HP-"
 label_settings = ExtResource("2_m3j3s")
 
 [node name="Label2" type="Label" parent="DefenderPane/DefenderPanel"]
+visible = false
 layout_mode = 0
 offset_left = 239.0
 offset_top = 454.0

@@ -7,7 +7,7 @@ extends Node
 	"meleeDamage":1,
 	"movementRange":6,
 	"speed":600.0,
-	"maxHealth":0,
+	"maxHealth":10,
 	"currentHealth":10,
 	"currentAmmo":6,
 	"maxAmmo":6,

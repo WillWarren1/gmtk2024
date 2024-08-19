@@ -15,15 +15,15 @@ var camera
 var attacker: Unit = null
 var defender: Unit = null
 
-var atkHpMax = 10
-var atkHpCurr = 10
+var atkHpMax
+var atkHpCurr
 var atkStr = 1
 var atkIdle = "infantryIdle"
 var atkShoot = "infantryShoot"
 var atkHurt = "infantryHurt"
 
-var defHpMax = 10
-var defHpCurr = 10
+var defHpMax
+var defHpCurr
 var defStr = 1
 var defDefense = 1
 var defIdle = "infantryIdle"
@@ -69,10 +69,9 @@ func _ready():
 
 
 func _process(delta):
+	
 	atkHpCurrLabel.text = str(atkHpCurr)
-	atkHpMaxLabel.text = str(atkHpMax)
 	defHpCurrLabel.text = str(defHpCurr)
-	defHpMaxLabel.text = str(defHpMax)
 
 	global_position = camera.global_position
 
