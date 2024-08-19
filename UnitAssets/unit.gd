@@ -9,7 +9,7 @@ signal walk_finished
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
 @export var isPlayerControllable := false
 
-@export var size:= 1
+var size:= 1
 
 @export var unitClass: String = "Infantry"
 var hurtSprite: String = "infantryHurt"
@@ -36,17 +36,6 @@ var isWalking := false: set = _set_is_walking
 
 
 func _ready() -> void:
-
-	print(grid.calculate_grid_coordinates(position))
-	self.cell = grid.calculate_grid_coordinates(position)
-	print('ready cell', cell)
-	position = grid.calculate_map_position(cell)
-	base = grid.makeCellSquare(cell, size)
-	print("base", base)
-
-	if not Engine.is_editor_hint():
-		curve = Curve2D.new()
-	
 	match unitClass:
 		"Infantry":
 			hurtSprite = "infantryHurt"
@@ -61,7 +50,7 @@ func _ready() -> void:
 			statsController.stats.speed = 600.0
 			statsController.stats.maxHealth = 10
 			statsController.stats.currentHealth = 10
-			statsController.stats.size = 1
+			size = 1
 			statsController.stats.currentAmmo = 6
 			statsController.stats.maxAmmo = 6
 			statsController.stats.defense = 2
@@ -77,8 +66,8 @@ func _ready() -> void:
 			statsController.stats.movementRange = 10
 			statsController.stats.speed = 500.0
 			statsController.stats.maxHealth = 30
-			statsController.stats.currentHealth = 10
-			statsController.stats.size = 5
+			statsController.stats.currentHealth = 30
+			size = 5
 			statsController.stats.currentAmmo = 12
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
@@ -95,10 +84,22 @@ func _ready() -> void:
 			statsController.stats.speed = 400.0
 			statsController.stats.maxHealth = 50
 			statsController.stats.currentHealth = 50
-			statsController.stats.size = 13
+			size = 13
 			statsController.stats.currentAmmo = 24
 			statsController.stats.maxAmmo = 24
 			statsController.stats.defense = 4
+
+	print(grid.calculate_grid_coordinates(position))
+	self.cell = grid.calculate_grid_coordinates(position)
+	#print('ready cell', cell)
+	position = grid.calculate_map_position(cell)
+	base = grid.makeCellSquare(cell, size)
+	#print("base", base)
+
+	if not Engine.is_editor_hint():
+		curve = Curve2D.new()
+	
+	_sprite.play(idleSprite)
 
 
 

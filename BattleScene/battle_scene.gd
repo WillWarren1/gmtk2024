@@ -8,7 +8,9 @@ var camera
 @onready var defAnimSprite: AnimatedSprite2D = $DefenderPane/DefenderPanel/DefenderSprite
 @onready var readoutPanel: Label = $BattleMessage
 @onready var atkHpCurrLabel: Label = $AttackerPane/AttackerPanel/CurrHealthLabel
+@onready var atkHpMaxLabel: Label = $AttackerPane/AttackerPanel/MaxHealthLabel
 @onready var defHpCurrLabel: Label = $DefenderPane/DefenderPanel/CurrHealthLabel
+@onready var defHpMaxLabel: Label = $AttackerPane/AttackerPanel/MaxHealthLabel
 
 var attacker: Unit = null
 var defender: Unit = null
@@ -37,6 +39,10 @@ var counter = 24
 var damageDone = false
 
 func _ready():
+	atkIdle = attacker.idleSprite
+	atkShoot = attacker.shootSprite
+	atkHurt = attacker.hurtSprite
+	
 	atkPaney = atkPane.position.y
 	defPaney = defPane.position.y
 	atkPane.position.y -= 500
@@ -52,13 +58,21 @@ func _ready():
 	defHpCurr = defender.statsController.stats.currentHealth
 	camera = get_tree().get_first_node_in_group("Camera")
 	
+	if attacker.unitClass == "Mech":
+		atkAnimSprite.scale = Vector2(2,2)
+		defAnimSprite.scale = Vector2(-2,2)
+	if attacker.unitClass == "Carrier":
+		atkAnimSprite.scale = Vector2(1,1)
+		defAnimSprite.scale = Vector2(-1,1)
 	atkAnimSprite.play(atkIdle)
 	defAnimSprite.play(defIdle)
 
 
 func _process(delta):
 	atkHpCurrLabel.text = str(atkHpCurr)
+	atkHpMaxLabel.text = str(atkHpMax)
 	defHpCurrLabel.text = str(defHpCurr)
+	defHpMaxLabel.text = str(defHpMax)
 
 	global_position = camera.global_position
 

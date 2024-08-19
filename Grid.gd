@@ -1,3 +1,4 @@
+@tool
 # Represents a grid with its size, the size of each cell in pixels, and some helper functions to
 # calculate and convert coordinates.
 # It's meant to be shared between game objects that need access to those values.
@@ -46,7 +47,7 @@ func makeCellSquare(originCell: Vector2,size: int) -> Array:
 			offset.x += 1
 		offset.x = originCell.x + -halfsize
 		offset.y += 1
-	print(array)
+	#print(array)
 	return(array)
 
 # Returns true if the `cell_coordinates` are within the grid.

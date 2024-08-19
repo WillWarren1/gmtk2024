@@ -40,6 +40,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_reinitialize()
 	if _units.has(cursor.cell):
 		cursor.targetSprite.scale = Vector2(_units[cursor.cell].size, _units[cursor.cell].size)
 	else:
@@ -68,7 +69,7 @@ func _reinitialize() -> void:
 		# coordinates.
 		_units[unit.cell] = unit
 #		todo add rect cells
-		print("unit.base", unit.base)
+		#print("unit.base", unit.base)
 		for baseCell in unit.base:
 			_units[baseCell] = unit
 

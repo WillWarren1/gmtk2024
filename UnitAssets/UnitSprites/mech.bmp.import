@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfnpqrhc5b12p"
-path="res://.godot/imported/infantryHurt.png-ec21c8710d5ea105db58466bef6d7544.ctex"
+uid="uid://drkk7eoaeham2"
+path="res://.godot/imported/mech.bmp-3ff96b852d24e538010c318485c2fefe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UnitAssets/infantryHurt.png"
-dest_files=["res://.godot/imported/infantryHurt.png-ec21c8710d5ea105db58466bef6d7544.ctex"]
+source_file="res://UnitAssets/UnitSprites/mech.bmp"
+dest_files=["res://.godot/imported/mech.bmp-3ff96b852d24e538010c318485c2fefe.ctex"]
 
 [params]
 
