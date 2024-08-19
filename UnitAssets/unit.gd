@@ -15,7 +15,10 @@ var size:= 1
 var hurtSprite: String = "infantryHurt"
 var idleSprite: String = "infantryIdle"
 var shootSprite: String = "infantryShoot"
-
+var selectSound: String = "res://Audio/SFX/SoldierSelect.wav"
+var walkSound: String = "res://Audio/SFX/SoldierMove.wav"
+var shootSound: String = "res://Audio/SFX/SoldierShoot.wav"
+var hitSound: String = "res://Audio/SFX/SoldierHit.wav"
 
 var cell := Vector2.ZERO: set = set_cell
 var base: Array
@@ -30,6 +33,8 @@ var isWalking := false: set = _set_is_walking
 @onready var statsController: Node2D = $Stats
 @onready var hurtTimer = $Timer
 @onready var shootTimer = $Timer2
+@onready var audioMove = $AudioMove
+@onready var audioSelect = $AudioSelect
 
 #func _draw() -> void:
 	#draw_rect(base, Color.ALICE_BLUE, false, 1.0)
@@ -54,10 +59,15 @@ func _ready() -> void:
 			statsController.stats.currentAmmo = 6
 			statsController.stats.maxAmmo = 6
 			statsController.stats.defense = 2
+			statsController.stats.attackCounter = 40
 		"Mech":
 			hurtSprite = "mechHurt"
 			idleSprite = "mechIdle"
 			shootSprite = "mechShoot"
+			walkSound = "res://Audio/SFX/MechMove.wav"
+			shootSound = "res://Audio/SFX/MechShoot.wav"
+			hitSound = "res://Audio/SFX/MechHit.wav"
+			selectSound = "res://Audio/SFX/MechSelect.wav"
 			
 			statsController.stats.weaponRange = 8
 			statsController.stats.meleeRange = 3
@@ -71,10 +81,37 @@ func _ready() -> void:
 			statsController.stats.currentAmmo = 12
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
+			statsController.stats.attackCounter = 240
+		"EnemyMech":
+			hurtSprite = "mechHurt"
+			idleSprite = "mechIdle"
+			shootSprite = "mechShoot"
+			walkSound = "res://Audio/SFX/MechMove.wav"
+			shootSound = "res://Audio/SFX/MechShoot.wav"
+			hitSound = "res://Audio/SFX/MechHit.wav"
+			selectSound = "res://Audio/SFX/MechSelect.wav"
+			
+			statsController.stats.weaponRange = 8
+			statsController.stats.meleeRange = 3
+			statsController.stats.weaponDamage = 8
+			statsController.stats.meleeDamage = 3
+			statsController.stats.movementRange = 10
+			statsController.stats.speed = 500.0
+			statsController.stats.maxHealth = 30
+			statsController.stats.currentHealth = 30
+			size = 5
+			statsController.stats.currentAmmo = 12
+			statsController.stats.maxAmmo = 12
+			statsController.stats.defense = 3
+			statsController.stats.attackCounter = 240
 		"Carrier":
 			hurtSprite = "carrierHurt"
 			idleSprite = "carrierIdle"
 			shootSprite = "carrierShoot"
+			walkSound = "res://Audio/SFX/CarrierMove.wav"
+			shootSound = "res://Audio/SFX/CarrierShoot.wav"
+			hitSound = "res://Audio/SFX/CarrierHit.wav"
+			selectSound = "res://Audio/SFX/CarrierSelect.wav"
 			
 			statsController.stats.weaponRange = 10
 			statsController.stats.meleeRange = 0
@@ -88,6 +125,7 @@ func _ready() -> void:
 			statsController.stats.currentAmmo = 24
 			statsController.stats.maxAmmo = 24
 			statsController.stats.defense = 4
+			statsController.stats.attackCounter = 40
 
 	print(grid.calculate_grid_coordinates(position))
 	self.cell = grid.calculate_grid_coordinates(position)
@@ -100,6 +138,8 @@ func _ready() -> void:
 		curve = Curve2D.new()
 	
 	_sprite.play(idleSprite)
+	audioMove.stream = load(walkSound)
+	audioSelect.stream = load(selectSound)
 
 
 
@@ -113,6 +153,7 @@ func _process(delta: float) -> void:
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
 		emit_signal("walk_finished")
+		audioMove.stop()
 	
 
 
@@ -126,6 +167,8 @@ func walk_along(path: PackedVector2Array) -> void:
 		curve.add_point(grid.calculate_map_position(point) - position)
 	cell = path[-1]
 	self.isWalking = true
+	audioMove.play()
+	
 
 
 func set_cell(value: Vector2) -> void:
@@ -136,6 +179,7 @@ func set_is_selected(value: bool) -> void:
 	isSelected = value
 	if isSelected:
 		_anim_player.play("selected")
+		audioSelect.play()
 	else:
 		_anim_player.play("idle")
 

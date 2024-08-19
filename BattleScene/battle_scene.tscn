@@ -155,7 +155,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fd7xy")
 }],
-"loop": true,
+"loop": false,
 "name": &"infantryShoot",
 "speed": 5.0
 }, {
@@ -211,8 +211,11 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_x2ebh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_11f7o")
 }],
-"loop": true,
+"loop": false,
 "name": &"mechShoot",
 "speed": 5.0
 }]
@@ -266,7 +269,7 @@ metadata/_edit_use_anchors_ = true
 position = Vector2(175, 237)
 scale = Vector2(6, 6)
 sprite_frames = SubResource("SpriteFrames_0amgm")
-animation = &"infantryShoot"
+animation = &"mechIdle"
 metadata/_edit_group_ = true
 
 [node name="Label" type="Label" parent="AttackerPane/AttackerPanel"]
@@ -287,6 +290,8 @@ offset_right = 304.0
 offset_bottom = 499.0
 text = "-MAX"
 label_settings = ExtResource("2_m3j3s")
+
+[node name="AttackAudio" type="AudioStreamPlayer2D" parent="AttackerPane"]
 
 [node name="DefenderPane" type="Node2D" parent="."]
 
@@ -346,6 +351,8 @@ offset_right = 304.0
 offset_bottom = 499.0
 text = "-MAX"
 label_settings = ExtResource("2_m3j3s")
+
+[node name="DefendAudio" type="AudioStreamPlayer2D" parent="DefenderPane"]
 
 [node name="BattleMessage" type="Label" parent="."]
 layout_mode = 0

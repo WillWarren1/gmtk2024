@@ -11,6 +11,8 @@ var camera
 @onready var atkHpMaxLabel: Label = $AttackerPane/AttackerPanel/MaxHealthLabel
 @onready var defHpCurrLabel: Label = $DefenderPane/DefenderPanel/CurrHealthLabel
 @onready var defHpMaxLabel: Label = $AttackerPane/AttackerPanel/MaxHealthLabel
+@onready var atkAudio = $AttackerPane/AttackAudio
+@onready var defAudio = $DefenderPane/DefendAudio
 
 var attacker: Unit = null
 var defender: Unit = null
@@ -38,6 +40,9 @@ var defPaney
 var counter = 24
 var damageDone = false
 
+var atkAudioPlaying = false
+var defAudioPlaying = false
+
 func _ready():
 	atkIdle = attacker.idleSprite
 	atkShoot = attacker.shootSprite
@@ -51,11 +56,14 @@ func _ready():
 	atkStr = attacker.statsController.stats.weaponDamage
 	atkHpMax = attacker.statsController.stats.maxHealth
 	atkHpCurr = attacker.statsController.stats.currentHealth
+	atkAudio.stream = load(attacker.shootSound)
+	counter = attacker.statsController.stats.attackCounter
 
 	defStr = defender.statsController.stats.weaponDamage
 	defDefense = defender.statsController.stats.defense
 	defHpMax = defender.statsController.stats.maxHealth
 	defHpCurr = defender.statsController.stats.currentHealth
+	defAudio.stream = load(attacker.hitSound)
 	camera = get_tree().get_first_node_in_group("Camera")
 	
 	if attacker.unitClass == "Mech":
@@ -106,12 +114,16 @@ func _process(delta):
 			step = 3
 		3:
 			await get_tree().create_timer(.5).timeout
+			if not atkAudioPlaying:
+				atkAudio.play()
+				print("Playing")
+				atkAudioPlaying = true
 			step = 4
 		4:
 			counter -= 1
-			if counter >= 0:
+			if counter <= 0:
 				step = 5
-				counter = 68
+				counter = 160
 		5:
 			var ifHit = d6()
 			if ifHit == 6:
@@ -122,6 +134,10 @@ func _process(delta):
 			else:
 				step = 6
 			defAnimSprite.play(defHurt)
+			if not defAudioPlaying:
+				defAudio.play()
+				print("Playing2")
+				defAudioPlaying = true
 		6:
 			readoutPanel.text = "ATTACKER HITS FOR " + str(atkStr)
 			if damageDone == false:
