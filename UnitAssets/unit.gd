@@ -15,6 +15,7 @@ var size:= 1
 var hurtSprite: String = "infantryHurt"
 var idleSprite: String = "infantryIdle"
 var shootSprite: String = "infantryShoot"
+var walkSound: String = "res://Audio/SFX/CarrierMove.wav"
 
 
 var cell := Vector2.ZERO: set = set_cell
@@ -30,6 +31,7 @@ var isWalking := false: set = _set_is_walking
 @onready var statsController: Node2D = $Stats
 @onready var hurtTimer = $Timer
 @onready var shootTimer = $Timer2
+@onready var audioMove = $AudioMove
 
 #func _draw() -> void:
 	#draw_rect(base, Color.ALICE_BLUE, false, 1.0)
@@ -41,6 +43,7 @@ func _ready() -> void:
 			hurtSprite = "infantryHurt"
 			idleSprite = "infantryIdle"
 			shootSprite = "infantryShoot"
+			walkSound = "res://Audio/SFX/SoldierMove.wav"
 			
 			statsController.stats.weaponRange = 3
 			statsController.stats.meleeRange = 1
@@ -58,6 +61,7 @@ func _ready() -> void:
 			hurtSprite = "mechHurt"
 			idleSprite = "mechIdle"
 			shootSprite = "mechShoot"
+			walkSound = "res://Audio/SFX/MechMove.wav"
 			
 			statsController.stats.weaponRange = 8
 			statsController.stats.meleeRange = 3
@@ -75,6 +79,7 @@ func _ready() -> void:
 			hurtSprite = "carrierHurt"
 			idleSprite = "carrierIdle"
 			shootSprite = "carrierShoot"
+			walkSound = "res://Audio/SFX/CarrierMove.wav"
 			
 			statsController.stats.weaponRange = 10
 			statsController.stats.meleeRange = 0
@@ -113,6 +118,7 @@ func _process(delta: float) -> void:
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
 		emit_signal("walk_finished")
+		audioMove.stop()
 	
 
 
@@ -126,6 +132,9 @@ func walk_along(path: PackedVector2Array) -> void:
 		curve.add_point(grid.calculate_map_position(point) - position)
 	cell = path[-1]
 	self.isWalking = true
+	audioMove.stream = load(walkSound)
+	audioMove.play()
+	
 
 
 func set_cell(value: Vector2) -> void:

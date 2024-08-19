@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://uqcm7ckaicr7"]
+[gd_scene load_steps=9 format=3 uid="uid://uqcm7ckaicr7"]
 
 [ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
 [ext_resource type="Script" path="res://game_board.gd" id="2_o4r1v"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://gj0i45h5x1ae" path="res://UnitAssets/unit.tscn" id="5_xtiok"]
 [ext_resource type="Script" path="res://camera.gd" id="7_1ow0n"]
 [ext_resource type="PackedScene" uid="uid://c7mwedqteqa0g" path="res://CursorAssets/cursor.tscn" id="7_mwcw3"]
+[ext_resource type="AudioStream" uid="uid://llep1d6mwro5" path="res://Audio/Music/Drums.wav" id="8_afvp5"]
 
 [node name="Main" type="Node2D"]
 
@@ -43,6 +44,11 @@ script = ExtResource("7_1ow0n")
 [node name="Unit2" parent="." instance=ExtResource("5_xtiok")]
 position = Vector2(1040, 648)
 unitClass = "Mech"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_afvp5")
+volume_db = -20.0
+autoplay = true
 
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
