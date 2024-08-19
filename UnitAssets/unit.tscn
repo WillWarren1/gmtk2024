@@ -283,7 +283,7 @@ libraries = {
 autoplay = "idle"
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
-progress = 2.64774e+06
+progress = 2.65627e+06
 rotates = false
 loop = false
 
