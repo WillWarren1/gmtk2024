@@ -34,6 +34,7 @@ var isWalking := false: set = _set_is_walking
 @onready var hurtTimer = $Timer
 @onready var shootTimer = $Timer2
 @onready var audioMove = $AudioMove
+@onready var audioSelect = $AudioSelect
 
 #func _draw() -> void:
 	#draw_rect(base, Color.ALICE_BLUE, false, 1.0)
@@ -66,6 +67,7 @@ func _ready() -> void:
 			walkSound = "res://Audio/SFX/MechMove.wav"
 			shootSound = "res://Audio/SFX/MechShoot.wav"
 			hitSound = "res://Audio/SFX/MechHit.wav"
+			selectSound = "res://Audio/SFX/MechSelect.wav"
 			
 			statsController.stats.weaponRange = 8
 			statsController.stats.meleeRange = 3
@@ -87,6 +89,7 @@ func _ready() -> void:
 			walkSound = "res://Audio/SFX/CarrierMove.wav"
 			shootSound = "res://Audio/SFX/CarrierShoot.wav"
 			hitSound = "res://Audio/SFX/CarrierHit.wav"
+			selectSound = "res://Audio/SFX/CarrierSelect.wav"
 			
 			statsController.stats.weaponRange = 10
 			statsController.stats.meleeRange = 0
@@ -114,6 +117,7 @@ func _ready() -> void:
 	
 	_sprite.play(idleSprite)
 	audioMove.stream = load(walkSound)
+	audioSelect.stream = load(selectSound)
 
 
 
@@ -153,6 +157,7 @@ func set_is_selected(value: bool) -> void:
 	isSelected = value
 	if isSelected:
 		_anim_player.play("selected")
+		audioSelect.play()
 	else:
 		_anim_player.play("idle")
 

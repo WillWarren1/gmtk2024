@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://gj0i45h5x1ae"]
+[gd_scene load_steps=37 format=3 uid="uid://gj0i45h5x1ae"]
 
 [ext_resource type="Script" path="res://UnitAssets/unit.gd" id="1_iqde3"]
 [ext_resource type="Texture2D" uid="uid://dd7gxvna3x6hb" path="res://UnitAssets/unit_shadow.bmp" id="2_cc6p0"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://3820ea07kruj" path="res://UnitAssets/UnitSprites/mech.png" id="7_k2cup"]
 [ext_resource type="Texture2D" uid="uid://b127vb1ua38fe" path="res://UnitAssets/UnitSprites/mech_attack.png" id="8_a2xnu"]
 [ext_resource type="AudioStream" uid="uid://dmf2tmd5rk7mn" path="res://Audio/SFX/SoldierMove.wav" id="10_ahl2w"]
+[ext_resource type="AudioStream" uid="uid://chlrpurwd1cnx" path="res://Audio/SFX/SoldierSelect.wav" id="11_vyclb"]
 
 [sub_resource type="Animation" id="Animation_7sf2v"]
 length = 0.001
@@ -282,7 +283,7 @@ libraries = {
 autoplay = "idle"
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
-progress = 2.4631e+06
+progress = 2.64774e+06
 rotates = false
 loop = false
 
@@ -309,6 +310,9 @@ wait_time = 1.5
 [node name="AudioMove" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("10_ahl2w")
 volume_db = -20.0
+
+[node name="AudioSelect" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_vyclb")
 
 [connection signal="timeout" from="Timer" to="." method="hurt_finished"]
 [connection signal="timeout" from="Timer2" to="." method="attack_finished"]
