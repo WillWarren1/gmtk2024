@@ -266,7 +266,7 @@ metadata/_edit_use_anchors_ = true
 position = Vector2(175, 237)
 scale = Vector2(6, 6)
 sprite_frames = SubResource("SpriteFrames_0amgm")
-animation = &"infantryShoot"
+animation = &"mechIdle"
 metadata/_edit_group_ = true
 
 [node name="Label" type="Label" parent="AttackerPane/AttackerPanel"]

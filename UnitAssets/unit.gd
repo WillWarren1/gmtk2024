@@ -82,6 +82,28 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
 			statsController.stats.attackCounter = 240
+		"EnemyMech":
+			hurtSprite = "mechHurt"
+			idleSprite = "mechIdle"
+			shootSprite = "mechShoot"
+			walkSound = "res://Audio/SFX/MechMove.wav"
+			shootSound = "res://Audio/SFX/MechShoot.wav"
+			hitSound = "res://Audio/SFX/MechHit.wav"
+			selectSound = "res://Audio/SFX/MechSelect.wav"
+			
+			statsController.stats.weaponRange = 8
+			statsController.stats.meleeRange = 3
+			statsController.stats.weaponDamage = 8
+			statsController.stats.meleeDamage = 3
+			statsController.stats.movementRange = 10
+			statsController.stats.speed = 500.0
+			statsController.stats.maxHealth = 30
+			statsController.stats.currentHealth = 30
+			size = 5
+			statsController.stats.currentAmmo = 12
+			statsController.stats.maxAmmo = 12
+			statsController.stats.defense = 3
+			statsController.stats.attackCounter = 240
 		"Carrier":
 			hurtSprite = "carrierHurt"
 			idleSprite = "carrierIdle"

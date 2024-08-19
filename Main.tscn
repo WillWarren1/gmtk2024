@@ -37,13 +37,13 @@ position = Vector2(976, 560)
 position = Vector2(848, 648)
 isPlayerControllable = true
 
+[node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
+position = Vector2(1040, 656)
+unitClass = "EnemyMech"
+
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)
 script = ExtResource("7_1ow0n")
-
-[node name="Unit2" parent="." instance=ExtResource("5_xtiok")]
-position = Vector2(1040, 648)
-unitClass = "Mech"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_afvp5")
