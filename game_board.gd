@@ -10,6 +10,7 @@ extends Node2D
 @onready var _unit_path: UnitPath = $UnitPath
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var tileMap: TileMap = $"../TileMap"
+@onready var cursor: Node2D = $Cursor
 
 # This constant represents the directions in which a unit can move on the board. We will reference
 # the constant later in the script.
@@ -21,6 +22,8 @@ var _active_unit: Unit
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
+
+var _unit_base: Array
 
 
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
@@ -35,15 +38,16 @@ var _units := {}
 func _ready() -> void:
 	_reinitialize()
 
+
+func _process(delta: float) -> void:
+	if _units.has(cursor.cell):
+		cursor.targetSprite.scale = Vector2(_units[cursor.cell].size, _units[cursor.cell].size)
+	else:
+		cursor.targetSprite.scale = Vector2(1, 1)
+
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
 	return true if _units.has(cell) else false
-	#if _units.has(cell):
-		#return true
-	#for cellKey in _units.keys():
-		#if (_units[cellKey].base.has_point(cell)):
-			#return true
-	#return false
 
 
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
@@ -63,6 +67,10 @@ func _reinitialize() -> void:
 		# and a reference to the unit for the value. This allows us to access a unit given its grid
 		# coordinates.
 		_units[unit.cell] = unit
+#		todo add rect cells
+		print("unit.base", unit.base)
+		for baseCell in unit.base:
+			_units[baseCell] = unit
 
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
@@ -116,7 +124,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 			var coordinates: Vector2 = current + direction
 			# This is an "optimization". It does the same thing as our `if current in array:` above
 			# but repeating it here with the neighbors skips some instructions.
-			if is_occupied(coordinates):
+			if is_occupied(coordinates) && _units[coordinates] != _units[cell]:
 				continue
 			if coordinates in array:
 				continue
@@ -142,6 +150,7 @@ func _select_active_unit(cell: Vector2) -> void:
 		# I decided to group everything in the GameBoard class because it keeps all the selection logic
 		# in one place. I find it easy to keep track of what the class does this way.
 		_active_unit = _units[cell]
+		_unit_base = _units[cell].base
 		_active_unit.isSelected = true
 		_walkable_cells = get_walkable_cells(_active_unit)
 		_unit_overlay.draw(_walkable_cells)
@@ -198,7 +207,7 @@ func _clear_active_unit() -> void:
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
 func _move_active_unit(new_cell: Vector2) -> void:
-	if is_occupied(new_cell) or not new_cell in _walkable_cells:
+	if (is_occupied(new_cell) && _units[new_cell] != _active_unit) or not new_cell in _walkable_cells:
 		return
 
 	# When moving a unit, we need to update our `_units` dictionary. We instantly save it in the
@@ -212,6 +221,7 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	# finished.
 	_active_unit.walk_along(_unit_path.current_path)
 	await _active_unit.walk_finished
+	_reinitialize()
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
 	_clear_active_unit()
 
@@ -233,7 +243,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	if not _active_unit:
 		_select_active_unit(cell)
 	elif _active_unit.isSelected:
-		if is_occupied(cell):
+		if is_occupied(cell) && _units[cell] != _active_unit:
 			_select_target_unit(cell)
 			return
 		_move_active_unit(cell)

@@ -8,13 +8,17 @@ signal walk_finished
 #@export var skin: Texture: set = set_skin
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
 @export var isPlayerControllable := false
+
+@export var size:= 1
+
 @export var unitClass: String = "Infantry"
 var hurtSprite: String = "infantryHurt"
 var idleSprite: String = "infantryIdle"
 var shootSprite: String = "infantryShoot"
 
+
 var cell := Vector2.ZERO: set = set_cell
-var base: Rect2
+var base: Array
 var isSelected := false: set = set_is_selected
 
 var isWalking := false: set = _set_is_walking
@@ -27,8 +31,8 @@ var isWalking := false: set = _set_is_walking
 @onready var hurtTimer = $Timer
 @onready var shootTimer = $Timer2
 
-func _draw() -> void:
-	draw_rect(base, Color.ALICE_BLUE, false, 1.0)
+#func _draw() -> void:
+	#draw_rect(base, Color.ALICE_BLUE, false, 1.0)
 
 
 func _ready() -> void:
@@ -37,8 +41,7 @@ func _ready() -> void:
 	self.cell = grid.calculate_grid_coordinates(position)
 	print('ready cell', cell)
 	position = grid.calculate_map_position(cell)
-	var size = statsController.stats.size
-	base = grid.create_rectangle(cell, Vector2(size, size))
+	base = grid.makeCellSquare(cell, size)
 	print("base", base)
 
 	if not Engine.is_editor_hint():
@@ -101,6 +104,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_path_follow.progress += statsController.stats.speed * delta
+	base = grid.makeCellSquare(cell, size)
 
 	if _path_follow.progress_ratio >= 1.0:
 		self.isWalking = false
@@ -112,6 +116,7 @@ func _process(delta: float) -> void:
 
 
 func walk_along(path: PackedVector2Array) -> void:
+	print("path", path)
 	if path.is_empty():
 		return
 

@@ -32,10 +32,22 @@ func calculate_grid_coordinates(map_position: Vector2) -> Vector2:
 
 func create_rectangle(originCell: Vector2, rectSize: Vector2) -> Rect2:
 	var rect: Rect2 = Rect2()
-	rect.position = floor(originCell/cell_size - _half_cell_size)
+	rect.position = floor((originCell/cell_size) - _half_cell_size) * rectSize
 	rect.size = rectSize * cell_size
 	return rect
 
+func makeCellSquare(originCell: Vector2,size: int) -> Array:
+	var array = []
+	var halfsize = floor(size/2)
+	var offset = self.clamp(originCell + Vector2(-halfsize,-halfsize))
+	for i in size:
+		for ii in size:
+			array.append(offset)
+			offset.x += 1
+		offset.x = originCell.x + -halfsize
+		offset.y += 1
+	print(array)
+	return(array)
 
 # Returns true if the `cell_coordinates` are within the grid.
 # This method and the following one allow us to ensure the cursor or units can never go past the

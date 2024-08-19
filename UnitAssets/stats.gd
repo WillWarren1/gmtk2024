@@ -9,7 +9,6 @@ extends Node
 	"speed":600.0,
 	"maxHealth":0,
 	"currentHealth":10,
-	"size":1,
 	"currentAmmo":6,
 	"maxAmmo":6,
 	"defense":2,
