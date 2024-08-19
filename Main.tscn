@@ -38,8 +38,9 @@ position = Vector2(848, 648)
 isPlayerControllable = true
 
 [node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(1040, 656)
-unitClass = "EnemyMech"
+
+position = Vector2(1040, 648)
+unitClass = "Mech"
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)
@@ -47,7 +48,7 @@ script = ExtResource("7_1ow0n")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_afvp5")
-volume_db = -20.0
+volume_db = -0.324
 autoplay = true
 
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
