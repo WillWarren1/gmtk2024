@@ -2,11 +2,13 @@ extends Control
 
 var camera
 
-@onready var atkPane = $AttackerPane
-@onready var defPane = $DefenderPane
-@onready var readoutPanel = $BattleMessage
-@onready var atkHpCurrLabel = $AttackerPane/AttackerPanel/CurrHealthLabel
-@onready var defHpCurrLabel = $DefenderPane/DefenderPanel/CurrHealthLabel
+@onready var atkPane: Node2D = $AttackerPane
+@onready var atkAnimSprite: AnimatedSprite2D = $AttackerPane/AttackerPanel/AnimatedSprite2D
+@onready var defPane: Node2D = $DefenderPane
+@onready var defAnimSprite: AnimatedSprite2D = $DefenderPane/DefenderPanel/AnimatedSprite2D
+@onready var readoutPanel: Label = $BattleMessage
+@onready var atkHpCurrLabel: Label = $AttackerPane/AttackerPanel/CurrHealthLabel
+@onready var defHpCurrLabel: Label = $DefenderPane/DefenderPanel/CurrHealthLabel
 
 var attacker: Unit = null
 var defender: Unit = null
@@ -48,9 +50,9 @@ func _ready():
 func _process(delta):
 	atkHpCurrLabel.text = str(atkHpCurr)
 	defHpCurrLabel.text = str(defHpCurr)
-	
+
 	global_position = camera.global_position
-	
+
 	if camera.zoom_level == 2:
 		scale = Vector2(.5,.5)
 	elif camera.zoom_level == 1.75:
@@ -62,7 +64,7 @@ func _process(delta):
 	elif camera.zoom_level == 1:
 		scale = Vector2(1,1)
 
-	
+
 	match step:
 		0:
 			atkPane.position.y += 10
@@ -114,7 +116,7 @@ func _process(delta):
 			await get_tree().create_timer(.5).timeout
 			step = 11
 		11:
-			#queue_free()
+			queue_free()
 			pass
 
 func d6() -> int:

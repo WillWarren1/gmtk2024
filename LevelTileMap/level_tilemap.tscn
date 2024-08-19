@@ -6,12 +6,29 @@
 texture = ExtResource("1_kqyrh")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
+0:0/0/custom_data_0 = true
+0:0/0/custom_data_1 = true
+0:0/0/custom_data_2 = true
 1:0/0 = 0
+1:0/0/custom_data_0 = true
+1:0/0/custom_data_1 = true
+1:0/0/custom_data_2 = true
 0:1/0 = 0
+0:1/0/custom_data_0 = true
+0:1/0/custom_data_1 = true
+0:1/0/custom_data_2 = true
 1:1/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_kc6ff"]
 tile_size = Vector2i(32, 32)
+custom_data_layer_0/name = "isSmallUnitWalkable"
+custom_data_layer_0/type = 1
+custom_data_layer_1/name = "isMedUnitWalkable"
+custom_data_layer_1/type = 1
+custom_data_layer_2/name = "isBigUnitWalkable"
+custom_data_layer_2/type = 1
+custom_data_layer_3/name = "isResource"
+custom_data_layer_3/type = 1
 sources/0 = SubResource("TileSetAtlasSource_bp33n")
 
 [node name="TileMap" type="TileMap"]

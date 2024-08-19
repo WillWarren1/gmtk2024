@@ -12,7 +12,7 @@ extends Node
 	"size":1,
 	"currentAmmo":6,
 	"maxAmmo":6,
-	"defense":2
+	"defense":2,
 }
 
 func edit_stat(stat, amount):

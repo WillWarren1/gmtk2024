@@ -19,9 +19,9 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("mouseDown"):
 		if zoom_level > 1:
 			zoom_level -= .25
-	
+
 	zoom = Vector2(zoom_level,zoom_level)
-	
+
 	mouse_pos = get_viewport().get_mouse_position()
 	if mouse_pos.x > 1900:
 		if global_position.x < grid.size.x * grid.cell_size.x - 480:
