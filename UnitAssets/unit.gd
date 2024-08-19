@@ -8,9 +8,10 @@ signal walk_finished
 #@export var skin: Texture: set = set_skin
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
 @export var isPlayerControllable := false
-@export var hurtSprite: String = "infantryHurt"
-@export var idleSprite: String = "infantryIdle"
-@export var shootSprite: String = "infantryShoot"
+@export var unitClass: String = "Infantry"
+var hurtSprite: String = "infantryHurt"
+var idleSprite: String = "infantryIdle"
+var shootSprite: String = "infantryShoot"
 
 var cell := Vector2.ZERO: set = set_cell
 var base: Rect2
@@ -42,6 +43,59 @@ func _ready() -> void:
 
 	if not Engine.is_editor_hint():
 		curve = Curve2D.new()
+	
+	match unitClass:
+		"Infantry":
+			hurtSprite = "infantryHurt"
+			idleSprite = "infantryIdle"
+			shootSprite = "infantryShoot"
+			
+			statsController.stats.weaponRange = 3
+			statsController.stats.meleeRange = 1
+			statsController.stats.weaponDamage = 3
+			statsController.stats.meleeDamage = 1
+			statsController.stats.movementRange = 6
+			statsController.stats.speed = 600.0
+			statsController.stats.maxHealth = 10
+			statsController.stats.currentHealth = 10
+			statsController.stats.size = 1
+			statsController.stats.currentAmmo = 6
+			statsController.stats.maxAmmo = 6
+			statsController.stats.defense = 2
+		"Mech":
+			hurtSprite = "mechHurt"
+			idleSprite = "mechIdle"
+			shootSprite = "mechShoot"
+			
+			statsController.stats.weaponRange = 8
+			statsController.stats.meleeRange = 3
+			statsController.stats.weaponDamage = 8
+			statsController.stats.meleeDamage = 3
+			statsController.stats.movementRange = 10
+			statsController.stats.speed = 500.0
+			statsController.stats.maxHealth = 30
+			statsController.stats.currentHealth = 10
+			statsController.stats.size = 5
+			statsController.stats.currentAmmo = 12
+			statsController.stats.maxAmmo = 12
+			statsController.stats.defense = 3
+		"Carrier":
+			hurtSprite = "carrierHurt"
+			idleSprite = "carrierIdle"
+			shootSprite = "carrierShoot"
+			
+			statsController.stats.weaponRange = 10
+			statsController.stats.meleeRange = 0
+			statsController.stats.weaponDamage = 4
+			statsController.stats.meleeDamage = 0
+			statsController.stats.movementRange = 14
+			statsController.stats.speed = 400.0
+			statsController.stats.maxHealth = 50
+			statsController.stats.currentHealth = 50
+			statsController.stats.size = 13
+			statsController.stats.currentAmmo = 24
+			statsController.stats.maxAmmo = 24
+			statsController.stats.defense = 4
 
 
 
@@ -106,7 +160,10 @@ func attack():
 
 func hurt(damage):
 	_sprite.play(hurtSprite)
-	hurtTimer.start()
+	if statsController.stats.currentHealth > 0:
+		hurtTimer.start()
+	else:
+		queue_free()
 
 func hurt_finished():
 	_sprite.play(idleSprite)

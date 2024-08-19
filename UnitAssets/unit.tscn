@@ -172,9 +172,7 @@ animations = [{
 
 [node name="Unit" type="Path2D"]
 script = ExtResource("1_iqde3")
-hurtSprite = null
-idleSprite = null
-shootSprite = null
+unitClass = null
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
