@@ -9,6 +9,7 @@ extends Node2D
 @export var combatScene: PackedScene = preload("res://BattleScene/battle_scene.tscn")
 @onready var _unit_path: UnitPath = $UnitPath
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
+@onready var _target_overlay: TargetOverlay = $TargetOverlay
 @onready var tileMap: TileMap = $"../TileMap"
 @onready var cursor: Node2D = $Cursor
 
@@ -24,6 +25,7 @@ var _hovered_unit: Unit
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
+var _targetable_cells := []
 
 var _unit_base: Array
 
@@ -84,11 +86,15 @@ func _reinitialize() -> void:
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
 func get_walkable_cells(unit: Unit) -> Array:
-	return _flood_fill(unit.cell, unit.statsController.stats.movementRange)
+	return _flood_fill(unit.cell, unit.statsController.stats.currentMovementRange)
 
+func get_targetable_cells(unit: Unit) -> Array:
+	var range = unit.statsController.stats.currentMovementRange + unit.statsController.stats.weaponRange
+	var isForAttacking = true
+	return _flood_fill(unit.cell, range, isForAttacking)
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
-func _flood_fill(cell: Vector2, max_distance: int) -> Array:
+func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false) -> Array:
 	print("floodfill start", cell)
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
@@ -144,15 +150,19 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 				var individualExclusionZone = grid.makeCellSquare(coordinates, _units[cell].size)
 				print("individualExclusionZone", individualExclusionZone)
 				exclusionZone.append_array(individualExclusionZone)
-				continue
+				if !isForAttacking:
+					continue
+				elif _units[coordinates].isPlayerControllable:
+					continue
 			if coordinates in array:
 				continue
 
 			# This is where we extend the stack.
 			stack.append(coordinates)
-	for cellToExclude in exclusionZone:
-		if array.has(cellToExclude):
-			array.erase(cellToExclude)
+	if !isForAttacking:
+		for cellToExclude in exclusionZone:
+			if array.has(cellToExclude):
+				array.erase(cellToExclude)
 	return array
 
 # Selects the unit in the `cell` if there's one there.
@@ -176,6 +186,8 @@ func _select_active_unit(cell: Vector2) -> void:
 		_active_unit.isSelected = true
 		_walkable_cells = get_walkable_cells(_active_unit)
 		_unit_overlay.draw(_walkable_cells)
+		_targetable_cells = get_targetable_cells(_active_unit)
+		_target_overlay.draw(_targetable_cells)
 		var _pathable_cells = get_walkable_cells(_active_unit)
 		_unit_path.initialize(_pathable_cells)
 
@@ -221,6 +233,7 @@ func _select_target_unit(cell: Vector2) -> void:
 func _deselect_active_unit() -> void:
 	_active_unit.isSelected = false
 	_unit_overlay.clear()
+	_target_overlay.clear()
 	_unit_path.stop()
 
 

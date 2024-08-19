@@ -18,6 +18,8 @@ scale = Vector2(1, 1)
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("2_o4r1v")
+grid = null
+combatScene = null
 
 [node name="TargetOverlay" parent="GameBoard" instance=ExtResource("3_vuhvl")]
 
@@ -26,26 +28,22 @@ script = ExtResource("2_o4r1v")
 [node name="UnitPath" parent="GameBoard" instance=ExtResource("4_4j1ps")]
 
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(592, 520)
+position = Vector2(632, 619)
 isPlayerControllable = true
-unitClass = "Carrier"
+unitClass = "Mech"
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(976, 560)
-scale = Vector2(-1, 1)
-unitClass = "EnemyInfantry"
 
 [node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(765, 496)
 isPlayerControllable = true
-unitClass = "Mech"
 
 [node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(1168, 624)
-scale = Vector2(-1, 1)
-unitClass = "EnemyTurret"
+position = Vector2(838, 716)
+unitClass = "Mech"
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)

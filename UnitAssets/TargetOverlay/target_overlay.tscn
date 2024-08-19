@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dp2q81v0cexn7"]
+
+[ext_resource type="TileSet" uid="uid://bak2ms5bj0qse" path="res://UnitAssets/UnitOverlay/unit_overlay_tileset.tres" id="1_f8yqh"]
+[ext_resource type="Script" path="res://UnitAssets/TargetOverlay/target_overlay.gd" id="2_3uhqw"]
+
+[node name="TargetOverlay" type="TileMap"]
+modulate = Color(1, 0.0392157, 0.0392157, 0.462745)
+tile_set = ExtResource("1_f8yqh")
+format = 2
+script = ExtResource("2_3uhqw")
+
+[node name="TargetOverlay" type="TileMapLayer" parent="."]
+use_parent_material = true
+tile_set = ExtResource("1_f8yqh")
+y_sort_origin = 1

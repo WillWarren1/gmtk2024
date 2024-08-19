@@ -1,6 +1,6 @@
 [gd_scene load_steps=87 format=3 uid="uid://gj0i45h5x1ae"]
 [ext_resource type="Script" path="res://UnitAssets/unit.gd" id="1_iqde3"]
-[ext_resource type="Texture2D" uid="uid://dd7gxvna3x6hb" path="res://UnitAssets/unit_shadow.bmp" id="2_cc6p0"]
+[ext_resource type="Texture2D" uid="uid://dd7gxvna3x6hb" path="res://unit_shadow.bmp" id="2_cc6p0"]
 [ext_resource type="Texture2D" uid="uid://b17d8t82fsp7u" path="res://CursorAssets/target.bmp" id="2_fhql3"]
 [ext_resource type="Texture2D" uid="uid://bfnpqrhc5b12p" path="res://UnitAssets/UnitSprites/infantryHurt.png" id="3_3vldy"]
 [ext_resource type="Script" path="res://UnitAssets/stats.gd" id="3_e8j2y"]

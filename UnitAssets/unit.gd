@@ -1,4 +1,3 @@
-@tool
 class_name Unit
 extends Path2D
 
@@ -32,6 +31,7 @@ var isWalking := false: set = _set_is_walking
 @onready var baseHighlighter: Sprite2D = $PathFollow2D/BaseHighlighter
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
+@onready var unitPath: TileMap = $"../UnitPath"
 @onready var statsController: Node2D = $Stats
 @onready var hurtTimer = $Timer
 @onready var shootTimer = $Timer2
@@ -56,7 +56,8 @@ func _ready() -> void:
 			statsController.stats.meleeRange = 1
 			statsController.stats.weaponDamage = 3
 			statsController.stats.meleeDamage = 1
-			statsController.stats.movementRange = 6
+			statsController.stats.maxMovementRange = 6
+			statsController.stats.currentMovementRange = 6
 			statsController.stats.speed = 400.0
 			statsController.stats.maxHealth = 10
 			statsController.stats.currentHealth = 10
@@ -96,7 +97,8 @@ func _ready() -> void:
 			statsController.stats.meleeRange = 3
 			statsController.stats.weaponDamage = 8
 			statsController.stats.meleeDamage = 3
-			statsController.stats.movementRange = 10
+			statsController.stats.maxMovementRange = 10
+			statsController.stats.currentMovementRange = 10
 			statsController.stats.speed = 500.0
 			statsController.stats.maxHealth = 30
 			statsController.stats.currentHealth = 30
@@ -120,7 +122,8 @@ func _ready() -> void:
 			statsController.stats.meleeRange = 3
 			statsController.stats.weaponDamage = 8
 			statsController.stats.meleeDamage = 3
-			statsController.stats.movementRange = 10
+			statsController.stats.maxMovementRange = 10
+			statsController.stats.currentMovementRange = 10
 			statsController.stats.speed = 250.0
 			statsController.stats.maxHealth = 30
 			statsController.stats.currentHealth = 30
@@ -143,7 +146,8 @@ func _ready() -> void:
 			statsController.stats.meleeRange = 0
 			statsController.stats.weaponDamage = 4
 			statsController.stats.meleeDamage = 0
-			statsController.stats.movementRange = 14
+			statsController.stats.maxMovementRange = 14
+			statsController.stats.currentMovementRange = 14
 			statsController.stats.speed = 200.0
 			statsController.stats.maxHealth = 50
 			statsController.stats.currentHealth = 50
@@ -196,8 +200,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_path_follow.progress += statsController.stats.speed * delta
 	base = grid.makeCellSquare(cell, size)
-
 	if _path_follow.progress_ratio >= 1.0:
+		statsController.stats.currentMovementRange -= (unitPath.current_path.size() - 1)
 		self.isWalking = false
 		_path_follow.progress = 0.0
 		position = grid.calculate_map_position(cell)
