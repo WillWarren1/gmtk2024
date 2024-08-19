@@ -10,6 +10,7 @@ extends Node2D
 @onready var _unit_path: UnitPath = $UnitPath
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
 @onready var tileMap: TileMap = $"../TileMap"
+@onready var cursor: Node2D = $Cursor
 
 # This constant represents the directions in which a unit can move on the board. We will reference
 # the constant later in the script.
@@ -37,17 +38,16 @@ var _units := {}
 func _ready() -> void:
 	_reinitialize()
 
+func _process(delta: float) -> void:
+	if _units.has(cursor.cell):
+		cursor.targetSprite.scale = Vector2(_units[cursor.cell].size, _units[cursor.cell].size)
+	else:
+		cursor.targetSprite.scale = Vector2(1, 1)
 
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
 	return true if _units.has(cell) else false
-	#if _units.has(cell):
-		#return true
-	#for cellKey in _units.keys():
-		#if (_units[cellKey].base.has_point(cell)):
-			#return true
-	#return false
 
 
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
@@ -203,7 +203,7 @@ func _clear_active_unit() -> void:
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
 func _move_active_unit(new_cell: Vector2) -> void:
-	if is_occupied(new_cell) or not new_cell in _walkable_cells:
+	if (is_occupied(new_cell) && _units[new_cell] != _active_unit) or not new_cell in _walkable_cells:
 		return
 
 	# When moving a unit, we need to update our `_units` dictionary. We instantly save it in the
@@ -217,6 +217,7 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	# finished.
 	_active_unit.walk_along(_unit_path.current_path)
 	await _active_unit.walk_finished
+	_reinitialize()
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
 	_clear_active_unit()
 
@@ -238,7 +239,7 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	if not _active_unit:
 		_select_active_unit(cell)
 	elif _active_unit.isSelected:
-		if is_occupied(cell):
+		if is_occupied(cell) && _units[cell] != _active_unit:
 			_select_target_unit(cell)
 			return
 		_move_active_unit(cell)

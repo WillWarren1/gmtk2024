@@ -15,5 +15,6 @@ one_shot = true
 texture = ExtResource("3_n5ljf")
 
 [node name="CursorSprite" type="Sprite2D" parent="."]
+z_index = 1
 position = Vector2(15, -15)
 texture = ExtResource("1_q2rqe")

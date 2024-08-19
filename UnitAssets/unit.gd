@@ -44,6 +44,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_path_follow.progress += statsController.stats.speed * delta
+	base = grid.makeCellSquare(cell, size)
 
 	if _path_follow.progress_ratio >= 1.0:
 		self.isWalking = false

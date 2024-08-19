@@ -39,7 +39,7 @@ func create_rectangle(originCell: Vector2, rectSize: Vector2) -> Rect2:
 func makeCellSquare(originCell: Vector2,size: int) -> Array:
 	var array = []
 	var halfsize = floor(size/2)
-	var offset = originCell + Vector2(-halfsize,-halfsize)
+	var offset = self.clamp(originCell + Vector2(-halfsize,-halfsize))
 	for i in size:
 		for ii in size:
 			array.append(offset)

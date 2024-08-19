@@ -26,13 +26,15 @@ var cell := Vector2.ZERO: set = set_cell
 # We use the timer to have a cooldown on the cursor movement.
 @onready var _timer: Timer = $Timer
 
+@onready var targetSprite: Sprite2D = $target
+
 
 # When the cursor enters the scene tree, we snap its position to the centre of the cell and we
 # initialise the timer with our ui_cooldown variable.
 func _ready() -> void:
 	_timer.wait_time = ui_cooldown
 	position = grid.calculate_map_position(cell)
-	print("GRID SIZE STARTS AT ",grid.size.x)
+	print("GRID SIZE STARTS AT ", grid.size.x)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -72,7 +74,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		cell += Vector2.LEFT
 	elif event.is_action("ui_down"):
 		cell += Vector2.DOWN
-
 
 
 # This function controls the cursor's current position.

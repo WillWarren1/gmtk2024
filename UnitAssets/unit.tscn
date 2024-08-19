@@ -60,6 +60,7 @@ _data = {
 }
 
 [node name="Unit" type="Path2D"]
+z_index = 1
 script = ExtResource("1_iqde3")
 size = null
 
