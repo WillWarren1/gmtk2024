@@ -52,6 +52,7 @@ func _ready():
 	defShoot = defender.shootSprite
 	defHurt = defender.hurtSprite
 	
+
 	atkPaney = atkPane.position.y
 	defPaney = defPane.position.y
 	atkPane.position.y -= 500
@@ -69,34 +70,50 @@ func _ready():
 	defHpCurr = defender.statsController.stats.currentHealth
 	defAudio.stream = load(attacker.hitSound)
 	camera = get_tree().get_first_node_in_group("Camera")
+<< << << < HEAD
 	
 	if attacker.unitClass == "Mech" or attacker.unitClass == "EnemyMech" or attacker.unitClass == "EnemyTurret":
-		atkAnimSprite.scale = Vector2(2,2)
-		defAnimSprite.scale = Vector2(-2,2)
+		atkAnimSprite.scale = Vector2(2, 2)
+		defAnimSprite.scale = Vector2(-2, 2)
 	if attacker.unitClass == "Carrier":
-		atkAnimSprite.scale = Vector2(3,3)
-		defAnimSprite.scale = Vector2(-2,2)
+		atkAnimSprite.scale = Vector2(3, 3)
+		defAnimSprite.scale = Vector2(-2, 2)
+== == == =
+
+	if attacker.unitClass == "Mech":
+		atkAnimSprite.scale = Vector2(2, 2)
+		defAnimSprite.scale = Vector2(-2, 2)
+	if attacker.unitClass == "Carrier":
+		atkAnimSprite.scale = Vector2(1, 1)
+		defAnimSprite.scale = Vector2(-1, 1)
+	if defender.unitClass == "Mech":
+		atkAnimSprite.scale = Vector2(2, 2)
+		defAnimSprite.scale = Vector2(-2, 2)
+	if defender.unitClass == "Carrier":
+		atkAnimSprite.scale = Vector2(1, 1)
+		defAnimSprite.scale = Vector2(-1, 1)
+>> >> >> > db594ba(Fix for targettingbigunits)
 	atkAnimSprite.play(atkIdle)
 	defAnimSprite.play(defIdle)
 
 
 func _process(delta):
-	
+
 	atkHpCurrLabel.text = str(atkHpCurr)
 	defHpCurrLabel.text = str(defHpCurr)
 
 	global_position = camera.global_position
 
 	if camera.zoom_level == 2:
-		scale = Vector2(.5,.5)
+		scale = Vector2(.5, .5)
 	elif camera.zoom_level == 1.75:
-		scale = Vector2(.625,.625)
+		scale = Vector2(.625, .625)
 	elif camera.zoom_level == 1.5:
-		scale = Vector2(.75,.75)
+		scale = Vector2(.75, .75)
 	elif camera.zoom_level == 1.25:
-		scale = Vector2(.875,.875)
+		scale = Vector2(.875, .875)
 	elif camera.zoom_level == 1:
-		scale = Vector2(1,1)
+		scale = Vector2(1, 1)
 
 
 	match step:
@@ -151,11 +168,11 @@ func _process(delta):
 				damageDone = true
 			step = 10
 		7:
-			readoutPanel.text = "CRITICAL HIT! " + str(atkStr + floor(atkStr/2)) + " DAMAGE!"
+			readoutPanel.text = "CRITICAL HIT! " + str(atkStr + floor(atkStr / 2)) + " DAMAGE!"
 			if damageDone == false:
-				defHpCurr -= atkStr + floor(atkStr/2)
+				defHpCurr -= atkStr + floor(atkStr / 2)
 				defender.statsController.stats.currentHealth = defHpCurr
-				defender.hurt(atkStr + floor(atkStr/2))
+				defender.hurt(atkStr + floor(atkStr / 2))
 				damageDone = true
 			step = 10
 		8:
@@ -177,5 +194,4 @@ func _process(delta):
 			pass
 
 func d6() -> int:
-	return [1,2,3,4,5,6].pick_random()
-	
+	return [1, 2, 3, 4, 5, 6].pick_random()

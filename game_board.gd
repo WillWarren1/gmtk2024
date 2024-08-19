@@ -19,6 +19,8 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
 # overlay, and the interactive path drawing later on when the player decides to deselect it.
 var _active_unit: Unit
+
+var _hovered_unit: Unit
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
@@ -42,9 +44,15 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_reinitialize()
 	if _units.has(cursor.cell):
-		cursor.targetSprite.scale = Vector2(_units[cursor.cell].size, _units[cursor.cell].size)
+		_hovered_unit = _units[cursor.cell]
+		cursor.targetSprite.visible = false
+		_hovered_unit.baseHighlighter.visible = true
 	else:
-		cursor.targetSprite.scale = Vector2(1, 1)
+		if !cursor.targetSprite.visible:
+			cursor.targetSprite.visible = true
+		if _hovered_unit &&  is_instance_valid(_hovered_unit) && _hovered_unit.baseHighlighter.visible:
+			_hovered_unit.baseHighlighter.visible = false
+		_hovered_unit = null
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
@@ -166,7 +174,12 @@ func _select_target_unit(cell: Vector2) -> void:
 	if _units[cell].isPlayerControllable == true:
 		return
 	print("Checking AttackRange...")
-	var distance = floor(_active_unit.cell.distance_to(cell))
+	var baseCellDistances = []
+	for baseCell in _active_unit.base:
+		var distanceToBaseCell = floor(baseCell.distance_to(cell))
+		baseCellDistances.append(distanceToBaseCell)
+	print("min distance", baseCellDistances.min())
+	var distance = floor(baseCellDistances.min())
 	print("distance", distance)
 	var weaponRange = _active_unit.statsController.stats.weaponRange
 	var meleeRange = _active_unit.statsController.stats.meleeRange
@@ -244,7 +257,9 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	if not _active_unit:
 		_select_active_unit(cell)
 	elif _active_unit.isSelected:
+		print("is_occupied(cell)", is_occupied(cell))
 		if is_occupied(cell) && _units[cell] != _active_unit:
+			print('selecting target', _units[cell])
 			_select_target_unit(cell)
 			return
 		_move_active_unit(cell)
@@ -253,3 +268,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _active_unit and event.is_action_pressed("ui_cancel"):
 		_deselect_active_unit()
 		_clear_active_unit()
+
+
+func _on_unit_base_updated():
+	_reinitialize()

@@ -28,7 +28,6 @@ isPlayerControllable = true
 unitClass = "Carrier"
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
-position = Vector2(16, 16)
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(976, 560)

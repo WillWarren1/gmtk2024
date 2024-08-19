@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://b17d8t82fsp7u" path="res://CursorAssets/target.bmp" id="3_n5ljf"]
 
 [node name="Cursor" type="Node2D"]
+position = Vector2(16, 16)
 script = ExtResource("1_bk7wb")
 
 [node name="Timer" type="Timer" parent="."]
