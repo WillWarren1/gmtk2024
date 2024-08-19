@@ -101,8 +101,10 @@ func _process(delta):
 				counter = 68
 		5:
 			var ifHit = d6()
-
-			if ifHit <= defDefense:
+			if ifHit == 6:
+				print("CRIT")
+				step = 7
+			elif ifHit <= defDefense:
 				step = 8
 			else:
 				step = 6
@@ -113,6 +115,14 @@ func _process(delta):
 				defHpCurr -= atkStr
 				defender.statsController.stats.currentHealth = defHpCurr
 				defender.hurt(atkStr)
+				damageDone = true
+			step = 10
+		7:
+			readoutPanel.text = "CRITICAL HIT! " + str(atkStr + floor(atkStr/2)) + " DAMAGE!"
+			if damageDone == false:
+				defHpCurr -= atkStr
+				defender.statsController.stats.currentHealth = defHpCurr
+				defender.hurt(atkStr + floor(atkStr/2))
 				damageDone = true
 			step = 10
 		8:
