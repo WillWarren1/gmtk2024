@@ -3,11 +3,11 @@
 [ext_resource type="Texture2D" uid="uid://bolmbxwuy4yq6" path="res://UnitAssets/UnitOverlay/tileset_unit_overlay.svg" id="1_6bngr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nm82v"]
-texture_region_size = Vector2i(80, 80)
+texture_region_size = Vector2i(32, 32)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5rkrq"]
 texture = ExtResource("1_6bngr")
-texture_region_size = Vector2i(80, 80)
+texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 0
@@ -21,9 +21,9 @@ texture_region_size = Vector2i(80, 80)
 0:0/0/terrains_peering_bit/top_right_corner = 0
 
 [resource]
-tile_size = Vector2i(80, 80)
+tile_size = Vector2i(32, 32)
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Terrain 0"
-terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+terrain_set_0/terrain_0/color = Color(0.729186, 0, 0.0748144, 1)
 sources/0 = SubResource("TileSetAtlasSource_nm82v")
 sources/1 = SubResource("TileSetAtlasSource_5rkrq")

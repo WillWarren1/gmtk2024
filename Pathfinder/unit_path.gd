@@ -11,7 +11,7 @@ var _pathfinder: PathFinder
 # We cache the path so we can reuse it from the game board. If the player decides to confirm unit
 # movement with the cursor, we can pass the path to the unit's walk_along() function.
 var current_path := PackedVector2Array()
-
+@onready var tileMap: TileMap = $"../../TileMap"
 
 # Creates a new PathFinder that uses the AStar algorithm we use to find a path between two cells
 # among the `walkable_cells`.
@@ -25,7 +25,7 @@ func draw(cell_start: Vector2, cell_end: Vector2) -> void:
 	# We first clear any tiles on the tilemap, then let the Astar2D (PathFinder) find the
 	# path for us.
 	clear()
-	current_path = _pathfinder.calculate_point_path(cell_start, cell_end)
+	current_path = _pathfinder.calculate_point_path(cell_start, cell_end, tileMap)
 	# And we draw a tile for every cell in the path.
 	set_cells_terrain_connect(0, current_path, 0, 0)
 

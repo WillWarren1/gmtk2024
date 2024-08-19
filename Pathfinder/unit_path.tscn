@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ukn87x0yagba"]
 
 [ext_resource type="TileSet" uid="uid://byahx4o0bsg8p" path="res://Pathfinder/unit_path_tileset.tres" id="1_nldl0"]
-[ext_resource type="Script" path="res://unit_path.gd" id="2_h5rq1"]
+[ext_resource type="Script" path="res://Pathfinder/unit_path.gd" id="2_h5rq1"]
 [ext_resource type="Resource" uid="uid://bw811unajumvy" path="res://Grid.tres" id="3_gw4q1"]
 
 [node name="UnitPath" type="TileMap"]

@@ -1,18 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://cg5abwfbofgth"]
+[gd_scene load_steps=8 format=3 uid="uid://uqcm7ckaicr7"]
 
-[ext_resource type="PackedScene" uid="uid://cc7h37h3nv606" path="res://Background/Map.tscn" id="1_f304e"]
+[ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
 [ext_resource type="Script" path="res://game_board.gd" id="2_o4r1v"]
 [ext_resource type="PackedScene" uid="uid://ixme7eh3gids" path="res://UnitAssets/UnitOverlay/unit_overlay.tscn" id="3_qaid1"]
 [ext_resource type="PackedScene" uid="uid://ukn87x0yagba" path="res://Pathfinder/unit_path.tscn" id="4_4j1ps"]
 [ext_resource type="PackedScene" uid="uid://gj0i45h5x1ae" path="res://UnitAssets/unit.tscn" id="5_xtiok"]
-[ext_resource type="Texture2D" uid="uid://bx8noq1nurm4t" path="res://UnitAssets/soldier.bmp" id="6_owlpo"]
+[ext_resource type="Script" path="res://camera.gd" id="7_1ow0n"]
 [ext_resource type="PackedScene" uid="uid://c7mwedqteqa0g" path="res://CursorAssets/cursor.tscn" id="7_mwcw3"]
 
 [node name="Main" type="Node2D"]
 
-[node name="Map" parent="." instance=ExtResource("1_f304e")]
-rendering_quadrant_size = 16
-navigation_visibility_mode = 1
+[node name="TileMap" parent="." instance=ExtResource("1_4ugnn")]
+scale = Vector2(1, 1)
 
 [node name="GameBoard" type="Node2D" parent="."]
 y_sort_enabled = true
@@ -23,19 +22,18 @@ script = ExtResource("2_o4r1v")
 [node name="UnitPath" parent="GameBoard" instance=ExtResource("4_4j1ps")]
 
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(743, 577)
-skin = ExtResource("6_owlpo")
-skinOffset = Vector2(0, -32)
+position = Vector2(784, 584)
 isPlayerControllable = true
-
-[node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(980, 579)
-skin = ExtResource("6_owlpo")
-skinOffset = Vector2(0, -32)
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 position = Vector2(-22, 18)
-scale = Vector2(2, 2)
+
+[node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
+position = Vector2(944, 584)
+
+[node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
+zoom = Vector2(2, 2)
+script = ExtResource("7_1ow0n")
 
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]

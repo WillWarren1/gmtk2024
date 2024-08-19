@@ -10,6 +10,7 @@ signal walk_finished
 @export var isPlayerControllable := false
 
 var cell := Vector2.ZERO: set = set_cell
+var base: Rect2
 var isSelected := false: set = set_is_selected
 
 var isWalking := false: set = _set_is_walking
@@ -19,13 +20,20 @@ var isWalking := false: set = _set_is_walking
 @onready var _path_follow: PathFollow2D = $PathFollow2D
 @onready var statsController: Node2D = $Stats
 
+func _draw() -> void:
+	draw_rect(base, Color.ALICE_BLUE, false, 1.0)
+
 
 func _ready() -> void:
 	set_process(false)
 
 	print(grid.calculate_grid_coordinates(position))
 	self.cell = grid.calculate_grid_coordinates(position)
+	print('ready cell', cell)
 	position = grid.calculate_map_position(cell)
+	var size = statsController.stats.size
+	base = grid.create_rectangle(cell, Vector2(size, size))
+	print("base", base)
 
 	if not Engine.is_editor_hint():
 		curve = Curve2D.new()

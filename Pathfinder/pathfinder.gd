@@ -24,13 +24,15 @@ func _init(grid: Grid, walkable_cells: Array) -> void:
 	for cell in walkable_cells:
 		# For each cell, we define a key-value pair of cell coordinates: index.
 		cell_mappings[cell] = _grid.as_index(cell)
+
+
 	# We then add all the cells to our AStar2D instance and connect them to create our pathfinding
 	# graph.
 	_add_and_connect_points(cell_mappings)
 
 
 # Returns the path found between `start` and `end` as an array of Vector2 coordinates.
-func calculate_point_path(start: Vector2, end: Vector2) -> PackedVector2Array:
+func calculate_point_path(start: Vector2, end: Vector2, tileMap: TileMap) -> PackedVector2Array:
 	# With the AStar algorithm, we have to use the points' indices to get a path. This is why we
 	# need a reliable way to calculate an index given some input coordinates.
 	# Our Grid.as_index() method does just that.
@@ -40,7 +42,9 @@ func calculate_point_path(start: Vector2, end: Vector2) -> PackedVector2Array:
 	# PackedVector2Array() to avoid errors.
 	if _astar.has_point(start_index) and _astar.has_point(end_index):
 		# The AStar2D object then finds the best path between the two indices.
-		return _astar.get_point_path(start_index, end_index)
+		var path = _astar.get_point_path(start_index, end_index)
+
+		return path
 	else:
 		return PackedVector2Array()
 

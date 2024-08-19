@@ -7,4 +7,5 @@ extends TileMap
 # The function fills the tilemap with the cells, giving visual feedback on where a unit can walk.
 func draw(cells: Array) -> void:
 	clear()
-	set_cells_terrain_connect(0, cells, 0, 0)
+	for cell in cells:
+		set_cell(0, cell, 1, Vector2(0, 0))

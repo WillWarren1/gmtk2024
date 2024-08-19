@@ -20,7 +20,10 @@ animations = [{
 [sub_resource type="LabelSettings" id="LabelSettings_pk2s1"]
 font_size = 32
 
-[node name="BattleScene" type="Node2D"]
+[node name="BattleScene" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+scale = Vector2(0.5, 0.5)
 script = ExtResource("1_ca6ap")
 
 [node name="AttackerPane" type="Node2D" parent="."]
@@ -98,6 +101,7 @@ position = Vector2(175, 237)
 sprite_frames = SubResource("SpriteFrames_0amgm")
 
 [node name="BattleMessage" type="Label" parent="."]
+layout_mode = 0
 offset_left = -609.0
 offset_top = 263.0
 offset_bottom = 371.0

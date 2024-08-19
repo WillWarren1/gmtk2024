@@ -4,5 +4,3 @@
 
 [resource]
 script = ExtResource("1_6fjt3")
-size = Vector2(30, 30)
-cell_size = Vector2(80, 80)

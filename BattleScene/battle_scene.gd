@@ -1,10 +1,14 @@
-extends Node2D
+extends Control
 
-@onready var atkPane = $AttackerPane
-@onready var defPane = $DefenderPane
-@onready var readoutPanel = $BattleMessage
-@onready var atkHpCurrLabel = $AttackerPane/AttackerPanel/CurrHealthLabel
-@onready var defHpCurrLabel = $DefenderPane/DefenderPanel/CurrHealthLabel
+var camera
+
+@onready var atkPane: Node2D = $AttackerPane
+@onready var atkAnimSprite: AnimatedSprite2D = $AttackerPane/AttackerPanel/AnimatedSprite2D
+@onready var defPane: Node2D = $DefenderPane
+@onready var defAnimSprite: AnimatedSprite2D = $DefenderPane/DefenderPanel/AnimatedSprite2D
+@onready var readoutPanel: Label = $BattleMessage
+@onready var atkHpCurrLabel: Label = $AttackerPane/AttackerPanel/CurrHealthLabel
+@onready var defHpCurrLabel: Label = $DefenderPane/DefenderPanel/CurrHealthLabel
 
 var attacker: Unit = null
 var defender: Unit = null
@@ -31,22 +35,36 @@ func _ready():
 	defPaney = defPane.position.y
 	atkPane.position.y -= 500
 	defPane.position.y += 500
-	
+
 	atkStr = attacker.statsController.stats.weaponDamage
 	atkHpMax = attacker.statsController.stats.maxHealth
 	atkHpCurr = attacker.statsController.stats.currentHealth
-	
+
 	defStr = defender.statsController.stats.weaponDamage
 	defDefense = defender.statsController.stats.defense
 	defHpMax = defender.statsController.stats.maxHealth
 	defHpCurr = defender.statsController.stats.currentHealth
+	camera = get_tree().get_first_node_in_group("Camera")
 
 
 func _process(delta):
 	atkHpCurrLabel.text = str(atkHpCurr)
 	defHpCurrLabel.text = str(defHpCurr)
 
-	
+	global_position = camera.global_position
+
+	if camera.zoom_level == 2:
+		scale = Vector2(.5,.5)
+	elif camera.zoom_level == 1.75:
+		scale = Vector2(.625,.625)
+	elif camera.zoom_level == 1.5:
+		scale = Vector2(.75,.75)
+	elif camera.zoom_level == 1.25:
+		scale = Vector2(.875,.875)
+	elif camera.zoom_level == 1:
+		scale = Vector2(1,1)
+
+
 	match step:
 		0:
 			atkPane.position.y += 10
@@ -99,6 +117,7 @@ func _process(delta):
 			step = 11
 		11:
 			queue_free()
+			pass
 
 func d6() -> int:
 	return [1,2,3,4,5,6].pick_random()

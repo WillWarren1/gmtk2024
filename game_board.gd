@@ -9,6 +9,7 @@ extends Node2D
 @export var combatScene: PackedScene = preload("res://BattleScene/battle_scene.tscn")
 @onready var _unit_path: UnitPath = $UnitPath
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
+@onready var tileMap: TileMap = $"../TileMap"
 
 # This constant represents the directions in which a unit can move on the board. We will reference
 # the constant later in the script.
@@ -39,6 +40,12 @@ func _ready() -> void:
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
 	return true if _units.has(cell) else false
+	#if _units.has(cell):
+		#return true
+	#for cellKey in _units.keys():
+		#if (_units[cellKey].base.has_point(cell)):
+			#return true
+	#return false
 
 
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
@@ -67,6 +74,7 @@ func get_walkable_cells(unit: Unit) -> Array:
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
 func _flood_fill(cell: Vector2, max_distance: int) -> Array:
+	print("floodfill start", cell)
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
 	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
@@ -83,6 +91,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		# 2. We haven't already visited and filled this cell
 		# 3. We are within the `max_distance`, a number of cells.
 		if not grid.is_within_bounds(current):
+			print("not within bounds", current)
 			continue
 		if current in array:
 			continue
@@ -91,6 +100,12 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		var difference: Vector2 = (current - cell).abs()
 		var distance := int(difference.x + difference.y)
 		if distance > max_distance:
+			continue
+
+#		Currently only works for small units, make isWalkable dynamic by unit size once we have multiple unit sizes
+		var tileData = tileMap.get_cell_tile_data(0, current)
+		var isWalkable = tileData != null && tileData.get_custom_data("isSmallUnitWalkable")
+		if !isWalkable:
 			continue
 
 		# If we meet all the conditions, we "fill" the `current` cell. To be more accurate, we store
@@ -132,8 +147,8 @@ func _select_active_unit(cell: Vector2) -> void:
 		_active_unit.isSelected = true
 		_walkable_cells = get_walkable_cells(_active_unit)
 		_unit_overlay.draw(_walkable_cells)
-		_unit_path.initialize(_walkable_cells)
-		print("selected player controllable unit")
+		var _pathable_cells = get_walkable_cells(_active_unit)
+		_unit_path.initialize(_pathable_cells)
 
 func _select_target_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
@@ -205,10 +220,10 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 	if _active_unit and _active_unit.isSelected:
 		_unit_path.draw(_active_unit.cell, new_cell)
 
-
 # Selects or moves a unit based on where the cursor is.
 func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	print("click!")
+	print("is walkable?", _walkable_cells.any(func(currentCell): return currentCell == cell))
 	# The cursor's "accept_pressed" means that the player wants to interact with a cell. Depending
 	# on the board's current state, this interaction means either that we want to select a unit all
 	# that we want to give it a move order.
