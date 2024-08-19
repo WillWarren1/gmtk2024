@@ -288,6 +288,8 @@ offset_bottom = 499.0
 text = "-MAX"
 label_settings = ExtResource("2_m3j3s")
 
+[node name="AttackAudio" type="AudioStreamPlayer2D" parent="AttackerPane"]
+
 [node name="DefenderPane" type="Node2D" parent="."]
 
 [node name="DefenderPanel" type="Panel" parent="DefenderPane"]
@@ -346,6 +348,8 @@ offset_right = 304.0
 offset_bottom = 499.0
 text = "-MAX"
 label_settings = ExtResource("2_m3j3s")
+
+[node name="DefendAudio" type="AudioStreamPlayer2D" parent="DefenderPane"]
 
 [node name="BattleMessage" type="Label" parent="."]
 layout_mode = 0

@@ -15,8 +15,10 @@ var size:= 1
 var hurtSprite: String = "infantryHurt"
 var idleSprite: String = "infantryIdle"
 var shootSprite: String = "infantryShoot"
-var walkSound: String = "res://Audio/SFX/CarrierMove.wav"
-
+var selectSound: String = "res://Audio/SFX/SoldierSelect.wav"
+var walkSound: String = "res://Audio/SFX/SoldierMove.wav"
+var shootSound: String = "res://Audio/SFX/SoldierShoot.wav"
+var hitSound: String = "res://Audio/SFX/SoldierHit.wav"
 
 var cell := Vector2.ZERO: set = set_cell
 var base: Array
@@ -43,7 +45,6 @@ func _ready() -> void:
 			hurtSprite = "infantryHurt"
 			idleSprite = "infantryIdle"
 			shootSprite = "infantryShoot"
-			walkSound = "res://Audio/SFX/SoldierMove.wav"
 			
 			statsController.stats.weaponRange = 3
 			statsController.stats.meleeRange = 1
@@ -57,11 +58,14 @@ func _ready() -> void:
 			statsController.stats.currentAmmo = 6
 			statsController.stats.maxAmmo = 6
 			statsController.stats.defense = 2
+			statsController.stats.attackCounter = 40
 		"Mech":
 			hurtSprite = "mechHurt"
 			idleSprite = "mechIdle"
 			shootSprite = "mechShoot"
 			walkSound = "res://Audio/SFX/MechMove.wav"
+			shootSound = "res://Audio/SFX/MechShoot.wav"
+			hitSound = "res://Audio/SFX/MechHit.wav"
 			
 			statsController.stats.weaponRange = 8
 			statsController.stats.meleeRange = 3
@@ -75,11 +79,14 @@ func _ready() -> void:
 			statsController.stats.currentAmmo = 12
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
+			statsController.stats.attackCounter = 240
 		"Carrier":
 			hurtSprite = "carrierHurt"
 			idleSprite = "carrierIdle"
 			shootSprite = "carrierShoot"
 			walkSound = "res://Audio/SFX/CarrierMove.wav"
+			shootSound = "res://Audio/SFX/CarrierShoot.wav"
+			hitSound = "res://Audio/SFX/CarrierHit.wav"
 			
 			statsController.stats.weaponRange = 10
 			statsController.stats.meleeRange = 0
@@ -93,6 +100,7 @@ func _ready() -> void:
 			statsController.stats.currentAmmo = 24
 			statsController.stats.maxAmmo = 24
 			statsController.stats.defense = 4
+			statsController.stats.attackCounter = 40
 
 	print(grid.calculate_grid_coordinates(position))
 	self.cell = grid.calculate_grid_coordinates(position)
@@ -105,6 +113,7 @@ func _ready() -> void:
 		curve = Curve2D.new()
 	
 	_sprite.play(idleSprite)
+	audioMove.stream = load(walkSound)
 
 
 
@@ -132,7 +141,6 @@ func walk_along(path: PackedVector2Array) -> void:
 		curve.add_point(grid.calculate_map_position(point) - position)
 	cell = path[-1]
 	self.isWalking = true
-	audioMove.stream = load(walkSound)
 	audioMove.play()
 	
 
