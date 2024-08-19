@@ -1,26 +1,129 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7ufa2mpjjlj7"]
+[gd_scene load_steps=20 format=3 uid="uid://c7ufa2mpjjlj7"]
 
 [ext_resource type="Script" path="res://BattleScene/battle_scene.gd" id="1_ca6ap"]
-[ext_resource type="Texture2D" uid="uid://dnwju1bnlq8mc" path="res://icon.svg" id="2_saqbf"]
+[ext_resource type="Texture2D" uid="uid://bfnpqrhc5b12p" path="res://UnitAssets/infantryHurt.png" id="2_j0nya"]
+[ext_resource type="LabelSettings" uid="uid://dfw42yrcm2sa3" path="res://BattleScene/standardLabel.tres" id="2_m3j3s"]
+[ext_resource type="Texture2D" uid="uid://dfeqd8v228626" path="res://UnitAssets/infantry.png" id="3_3pc1b"]
+[ext_resource type="Texture2D" uid="uid://cagg388egdsw5" path="res://UnitAssets/soldierShoot.png" id="4_ci1ai"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_ck7sa"]
-font_size = 32
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pso7u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l4igh"]
+atlas = ExtResource("2_j0nya")
+region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uc2pi"]
+atlas = ExtResource("2_j0nya")
+region = Rect2(32, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yvkdb"]
+atlas = ExtResource("3_3pc1b")
+region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o83ep"]
+atlas = ExtResource("3_3pc1b")
+region = Rect2(32, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ixxhq"]
+atlas = ExtResource("4_ci1ai")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_87fhs"]
+atlas = ExtResource("4_ci1ai")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2p6gl"]
+atlas = ExtResource("4_ci1ai")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rrdqy"]
+atlas = ExtResource("4_ci1ai")
+region = Rect2(0, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wsgs8"]
+atlas = ExtResource("4_ci1ai")
+region = Rect2(48, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2b7wb"]
+atlas = ExtResource("4_ci1ai")
+region = Rect2(96, 48, 48, 48)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0amgm"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_saqbf")
+"texture": SubResource("AtlasTexture_l4igh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uc2pi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4igh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uc2pi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4igh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uc2pi")
 }],
 "loop": true,
-"name": &"default",
+"name": &"infantryHurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yvkdb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o83ep")
+}],
+"loop": true,
+"name": &"infantryIdle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ixxhq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_87fhs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2p6gl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rrdqy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_87fhs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2p6gl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rrdqy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wsgs8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2b7wb")
+}],
+"loop": true,
+"name": &"infantryShoot",
 "speed": 5.0
 }]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6dlfa"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_pk2s1"]
 font_size = 32
 
 [node name="BattleScene" type="Control"]
+z_index = 10
 layout_mode = 3
 anchors_preset = 0
 scale = Vector2(0.5, 0.5)
@@ -30,9 +133,10 @@ script = ExtResource("1_ca6ap")
 
 [node name="AttackerPanel" type="Panel" parent="AttackerPane"]
 offset_left = -424.0
-offset_top = -276.0
+offset_top = -250.0
 offset_right = -74.0
-offset_bottom = 226.0
+offset_bottom = 252.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pso7u")
 metadata/_edit_use_anchors_ = true
 
 [node name="CurrHealthLabel" type="Label" parent="AttackerPane/AttackerPanel"]
@@ -42,7 +146,7 @@ offset_top = 451.0
 offset_right = 168.0
 offset_bottom = 502.0
 text = "10"
-label_settings = SubResource("LabelSettings_ck7sa")
+label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -54,22 +158,42 @@ offset_top = 451.0
 offset_right = 249.0
 offset_bottom = 502.0
 text = "10"
-label_settings = SubResource("LabelSettings_ck7sa")
+label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AttackerPane/AttackerPanel"]
+[node name="AttackerSprite" type="AnimatedSprite2D" parent="AttackerPane/AttackerPanel"]
 position = Vector2(175, 237)
+scale = Vector2(6, 6)
 sprite_frames = SubResource("SpriteFrames_0amgm")
+animation = &"infantryShoot"
+frame_progress = 0.550712
+
+[node name="Label" type="Label" parent="AttackerPane/AttackerPanel"]
+offset_left = 62.0
+offset_top = 454.0
+offset_right = 127.0
+offset_bottom = 499.0
+text = "HP-"
+label_settings = ExtResource("2_m3j3s")
+
+[node name="Label2" type="Label" parent="AttackerPane/AttackerPanel"]
+offset_left = 239.0
+offset_top = 454.0
+offset_right = 304.0
+offset_bottom = 499.0
+text = "-MAX"
+label_settings = ExtResource("2_m3j3s")
 
 [node name="DefenderPane" type="Node2D" parent="."]
 
 [node name="DefenderPanel" type="Panel" parent="DefenderPane"]
 offset_left = 81.0
-offset_top = -132.0
+offset_top = -250.0
 offset_right = 431.0
-offset_bottom = 370.0
+offset_bottom = 252.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6dlfa")
 metadata/_edit_use_anchors_ = true
 
 [node name="CurrHealthLabel" type="Label" parent="DefenderPane/DefenderPanel"]
@@ -79,7 +203,7 @@ offset_top = 451.0
 offset_right = 168.0
 offset_bottom = 502.0
 text = "10"
-label_settings = SubResource("LabelSettings_ck7sa")
+label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -91,19 +215,40 @@ offset_top = 451.0
 offset_right = 249.0
 offset_bottom = 502.0
 text = "10"
-label_settings = SubResource("LabelSettings_ck7sa")
+label_settings = ExtResource("2_m3j3s")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="DefenderPane/DefenderPanel"]
+[node name="DefenderSprite" type="AnimatedSprite2D" parent="DefenderPane/DefenderPanel"]
 position = Vector2(175, 237)
+scale = Vector2(-6, 6)
 sprite_frames = SubResource("SpriteFrames_0amgm")
+animation = &"infantryHurt"
+frame_progress = 0.311784
+
+[node name="Label" type="Label" parent="DefenderPane/DefenderPanel"]
+layout_mode = 0
+offset_left = 63.0
+offset_top = 454.0
+offset_right = 128.0
+offset_bottom = 499.0
+text = "HP-"
+label_settings = ExtResource("2_m3j3s")
+
+[node name="Label2" type="Label" parent="DefenderPane/DefenderPanel"]
+offset_left = 239.0
+offset_top = 454.0
+offset_right = 304.0
+offset_bottom = 499.0
+text = "-MAX"
+label_settings = ExtResource("2_m3j3s")
 
 [node name="BattleMessage" type="Label" parent="."]
 layout_mode = 0
-offset_left = -609.0
+offset_left = -304.0
 offset_top = 263.0
+offset_right = 305.0
 offset_bottom = 371.0
 label_settings = SubResource("LabelSettings_pk2s1")
 horizontal_alignment = 1

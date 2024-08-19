@@ -3,9 +3,9 @@ extends Control
 var camera
 
 @onready var atkPane: Node2D = $AttackerPane
-@onready var atkAnimSprite: AnimatedSprite2D = $AttackerPane/AttackerPanel/AnimatedSprite2D
+@onready var atkAnimSprite: AnimatedSprite2D = $AttackerPane/AttackerPanel/AttackerSprite
 @onready var defPane: Node2D = $DefenderPane
-@onready var defAnimSprite: AnimatedSprite2D = $DefenderPane/DefenderPanel/AnimatedSprite2D
+@onready var defAnimSprite: AnimatedSprite2D = $DefenderPane/DefenderPanel/DefenderSprite
 @onready var readoutPanel: Label = $BattleMessage
 @onready var atkHpCurrLabel: Label = $AttackerPane/AttackerPanel/CurrHealthLabel
 @onready var defHpCurrLabel: Label = $DefenderPane/DefenderPanel/CurrHealthLabel
@@ -16,18 +16,24 @@ var defender: Unit = null
 var atkHpMax = 10
 var atkHpCurr = 10
 var atkStr = 1
+var atkIdle = "infantryIdle"
+var atkShoot = "infantryShoot"
+var atkHurt = "infantryHurt"
 
 var defHpMax = 10
 var defHpCurr = 10
 var defStr = 1
-var defDefense
+var defDefense = 1
+var defIdle = "infantryIdle"
+var defShoot = "infantryShoot"
+var defHurt = "infantryHurt"
 
 var step = 0
 
 var atkPaney
 var defPaney
 
-var counter = 0
+var counter = 24
 var damageDone = false
 
 func _ready():
@@ -45,6 +51,9 @@ func _ready():
 	defHpMax = defender.statsController.stats.maxHealth
 	defHpCurr = defender.statsController.stats.currentHealth
 	camera = get_tree().get_first_node_in_group("Camera")
+	
+	atkAnimSprite.play(atkIdle)
+	defAnimSprite.play(defIdle)
 
 
 func _process(delta):
@@ -78,46 +87,62 @@ func _process(delta):
 			await get_tree().create_timer(.5).timeout
 			step = 2
 		2:
+			atkAnimSprite.play(atkShoot)
+			attacker.attack()
 			readoutPanel.text = "ATTACKER ATTACKS FOR " + str(atkStr)
 			step = 3
 		3:
 			await get_tree().create_timer(.5).timeout
 			step = 4
 		4:
-			#print("ANIMATION")
-			counter += 1
-			if counter >= 10:
+			counter -= 1
+			if counter >= 0:
 				step = 5
+				counter = 68
 		5:
 			var ifHit = d6()
-
-			if ifHit <= defDefense:
+			if ifHit == 6:
+				print("CRIT")
+				step = 7
+			elif ifHit <= defDefense:
 				step = 8
 			else:
 				step = 6
+			defAnimSprite.play(defHurt)
 		6:
 			readoutPanel.text = "ATTACKER HITS FOR " + str(atkStr)
-			await get_tree().create_timer(.5).timeout
-			step = 7
-		7:
 			if damageDone == false:
 				defHpCurr -= atkStr
 				defender.statsController.stats.currentHealth = defHpCurr
+				defender.hurt(atkStr)
+				damageDone = true
+			step = 10
+		7:
+			readoutPanel.text = "CRITICAL HIT! " + str(atkStr + floor(atkStr/2)) + " DAMAGE!"
+			if damageDone == false:
+				defHpCurr -= atkStr
+				defender.statsController.stats.currentHealth = defHpCurr
+				defender.hurt(atkStr + floor(atkStr/2))
 				damageDone = true
 			step = 10
 		8:
 			readoutPanel.text = "ATTACKER GRAZES FOR 1"
 			if damageDone == false:
-				defHpCurr -= atkStr
+				defHpCurr -= 1
 				defender.statsController.stats.currentHealth = defHpCurr
+				defender.hurt(1)
 				damageDone = true
 			step = 10
 		10:
-			await get_tree().create_timer(.5).timeout
-			step = 11
+			atkAnimSprite.play(atkIdle)
+			counter -= 1
+			if counter <= 0:
+				step = 11
+				counter = 36
 		11:
 			queue_free()
 			pass
 
 func d6() -> int:
 	return [1,2,3,4,5,6].pick_random()
+	

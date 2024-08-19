@@ -26,15 +26,22 @@ script = ExtResource("2_o4r1v")
 position = Vector2(784, 584)
 skin = ExtResource("6_bdio8")
 isPlayerControllable = true
+
 size = 5
+
+unitClass = "Infantry"
+
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 position = Vector2(-22, 18)
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(944, 584)
+
 isPlayerControllable = true
 size = 1
+unitClass = "Infantry"
+
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)

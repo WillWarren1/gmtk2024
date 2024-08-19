@@ -38,12 +38,12 @@ var _units := {}
 func _ready() -> void:
 	_reinitialize()
 
+
 func _process(delta: float) -> void:
 	if _units.has(cursor.cell):
 		cursor.targetSprite.scale = Vector2(_units[cursor.cell].size, _units[cursor.cell].size)
 	else:
 		cursor.targetSprite.scale = Vector2(1, 1)
-
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
@@ -177,6 +177,8 @@ func _select_target_unit(cell: Vector2) -> void:
 		combatInstance.attacker = _active_unit
 		combatInstance.defender = _units[cell]
 		add_child(combatInstance)
+		_deselect_active_unit()
+		_clear_active_unit()
 	elif distance <= meleeRange:
 		print("within melee range")
 		var combatInstance = combatScene.instantiate()
@@ -184,6 +186,8 @@ func _select_target_unit(cell: Vector2) -> void:
 		combatInstance.attacker = _active_unit
 		combatInstance.defender = _units[cell]
 		add_child(combatInstance)
+		_deselect_active_unit()
+		_clear_active_unit()
 
 # Deselects the active unit, clearing the cells overlay and interactive path drawing.
 # We need it for the `_move_active_unit()` function below, and we'll use it again in a moment.

@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://gj0i45h5x1ae"]
+[gd_scene load_steps=22 format=3 uid="uid://gj0i45h5x1ae"]
 
 [ext_resource type="Script" path="res://UnitAssets/unit.gd" id="1_iqde3"]
 [ext_resource type="Texture2D" uid="uid://dd7gxvna3x6hb" path="res://UnitAssets/unit_shadow.bmp" id="2_cc6p0"]
-[ext_resource type="Texture2D" uid="uid://bx8noq1nurm4t" path="res://UnitAssets/soldier.bmp" id="3_53bvl"]
+[ext_resource type="Texture2D" uid="uid://bfnpqrhc5b12p" path="res://UnitAssets/infantryHurt.png" id="3_3vldy"]
 [ext_resource type="Script" path="res://UnitAssets/stats.gd" id="3_e8j2y"]
+[ext_resource type="Texture2D" uid="uid://dfeqd8v228626" path="res://UnitAssets/infantry.png" id="3_p3ny8"]
+[ext_resource type="Texture2D" uid="uid://cagg388egdsw5" path="res://UnitAssets/soldierShoot.png" id="5_5avkc"]
 
 [sub_resource type="Animation" id="Animation_7sf2v"]
 length = 0.001
@@ -59,10 +61,123 @@ _data = {
 "selected": SubResource("Animation_3pwnk")
 }
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_2eqt4"]
+atlas = ExtResource("3_3vldy")
+region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_edbfp"]
+atlas = ExtResource("3_3vldy")
+region = Rect2(32, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6ebd"]
+atlas = ExtResource("3_p3ny8")
+region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pjl63"]
+atlas = ExtResource("3_p3ny8")
+region = Rect2(32, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ixxhq"]
+atlas = ExtResource("5_5avkc")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_87fhs"]
+atlas = ExtResource("5_5avkc")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2p6gl"]
+atlas = ExtResource("5_5avkc")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rrdqy"]
+atlas = ExtResource("5_5avkc")
+region = Rect2(0, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wsgs8"]
+atlas = ExtResource("5_5avkc")
+region = Rect2(48, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2b7wb"]
+atlas = ExtResource("5_5avkc")
+region = Rect2(96, 48, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c0gcu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2eqt4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_edbfp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2eqt4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_edbfp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2eqt4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_edbfp")
+}],
+"loop": true,
+"name": &"infantryHurt",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6ebd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pjl63")
+}],
+"loop": true,
+"name": &"infantryIdle",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ixxhq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_87fhs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2p6gl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rrdqy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_87fhs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2p6gl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rrdqy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wsgs8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2b7wb")
+}],
+"loop": true,
+"name": &"infantryShoot",
+"speed": 5.0
+}]
+
 [node name="Unit" type="Path2D"]
 z_index = 1
 script = ExtResource("1_iqde3")
+
 size = null
+
+unitClass = null
+
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -79,9 +194,19 @@ modulate = Color(0.968627, 0.945098, 0.713726, 0.537255)
 position = Vector2(0, 10)
 texture = ExtResource("2_cc6p0")
 
-[node name="UnitSprite" type="Sprite2D" parent="PathFollow2D"]
+[node name="UnitSprite" type="AnimatedSprite2D" parent="PathFollow2D"]
 position = Vector2(3, -12)
-texture = ExtResource("3_53bvl")
+sprite_frames = SubResource("SpriteFrames_c0gcu")
+animation = &"infantryShoot"
+autoplay = "infantryIdle"
 
 [node name="Stats" type="Node2D" parent="."]
 script = ExtResource("3_e8j2y")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Timer2" type="Timer" parent="."]
+
+[connection signal="timeout" from="Timer" to="." method="hurt_finished"]
+[connection signal="timeout" from="Timer2" to="." method="attack_finished"]
