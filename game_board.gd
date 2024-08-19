@@ -92,6 +92,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 	print("floodfill start", cell)
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
+	var exclusionZone := []
 	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
 	# cell we want to apply the flood fill algorithm to.
 	var stack := [cell]
@@ -119,7 +120,13 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 
 #		Currently only works for small units, make isWalkable dynamic by unit size once we have multiple unit sizes
 		var tileData = tileMap.get_cell_tile_data(0, current)
-		var isWalkable = tileData != null && tileData.get_custom_data("isSmallUnitWalkable")
+		var isWalkable = false
+		if _units[cell].unitClass == "Infantry":
+			isWalkable = tileData != null && tileData.get_custom_data("isSmallUnitWalkable")
+		elif _units[cell].unitClass == "Mech":
+			isWalkable = tileData != null && tileData.get_custom_data("isMedUnitWalkable")
+		elif _units[cell].unitClass == "Carrier":
+			isWalkable = tileData != null && tileData.get_custom_data("isBigUnitWalkable")
 		if !isWalkable:
 			continue
 
@@ -134,12 +141,18 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 			# This is an "optimization". It does the same thing as our `if current in array:` above
 			# but repeating it here with the neighbors skips some instructions.
 			if is_occupied(coordinates) && _units[coordinates] != _units[cell]:
+				var individualExclusionZone = grid.makeCellSquare(coordinates, _units[cell].size)
+				print("individualExclusionZone", individualExclusionZone)
+				exclusionZone.append_array(individualExclusionZone)
 				continue
 			if coordinates in array:
 				continue
 
 			# This is where we extend the stack.
 			stack.append(coordinates)
+	for cellToExclude in exclusionZone:
+		if array.has(cellToExclude):
+			array.erase(cellToExclude)
 	return array
 
 # Selects the unit in the `cell` if there's one there.

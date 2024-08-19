@@ -35,7 +35,7 @@ scale = Vector2(-1, 1)
 unitClass = "EnemyInfantry"
 
 [node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(848, 648)
+position = Vector2(765, 496)
 isPlayerControllable = true
 unitClass = "Mech"
 

@@ -38,6 +38,7 @@ var isWalking := false: set = _set_is_walking
 @onready var audioMove = $AudioMove
 @onready var audioSelect = $AudioSelect
 
+const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 #func _draw() -> void:
 	#draw_rect(base, Color.ALICE_BLUE, false, 1.0)
 
@@ -56,7 +57,7 @@ func _ready() -> void:
 			statsController.stats.weaponDamage = 3
 			statsController.stats.meleeDamage = 1
 			statsController.stats.movementRange = 6
-			statsController.stats.speed = 600.0
+			statsController.stats.speed = 400.0
 			statsController.stats.maxHealth = 10
 			statsController.stats.currentHealth = 10
 			size = 1
@@ -120,7 +121,7 @@ func _ready() -> void:
 			statsController.stats.weaponDamage = 8
 			statsController.stats.meleeDamage = 3
 			statsController.stats.movementRange = 10
-			statsController.stats.speed = 500.0
+			statsController.stats.speed = 250.0
 			statsController.stats.maxHealth = 30
 			statsController.stats.currentHealth = 30
 			size = 5
@@ -143,7 +144,7 @@ func _ready() -> void:
 			statsController.stats.weaponDamage = 4
 			statsController.stats.meleeDamage = 0
 			statsController.stats.movementRange = 14
-			statsController.stats.speed = 400.0
+			statsController.stats.speed = 200.0
 			statsController.stats.maxHealth = 50
 			statsController.stats.currentHealth = 50
 			size = 13

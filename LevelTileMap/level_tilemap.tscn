@@ -18,6 +18,8 @@ texture_region_size = Vector2i(32, 32)
 0:1/0/custom_data_1 = true
 0:1/0/custom_data_2 = true
 1:1/0 = 0
+1:1/0/custom_data_1 = true
+1:1/0/custom_data_2 = true
 
 [sub_resource type="TileSet" id="TileSet_kc6ff"]
 tile_size = Vector2i(32, 32)
