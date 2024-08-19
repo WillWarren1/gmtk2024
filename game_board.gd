@@ -22,6 +22,8 @@ var _active_unit: Unit
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
 
+var _unit_base: Array
+
 
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
 # dictionary represents a unit. The key is the position in grid coordinates, while the value is a
@@ -65,6 +67,10 @@ func _reinitialize() -> void:
 		# and a reference to the unit for the value. This allows us to access a unit given its grid
 		# coordinates.
 		_units[unit.cell] = unit
+#		todo add rect cells
+		print("unit.base", unit.base)
+		for baseCell in unit.base:
+			_units[baseCell] = unit
 
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
@@ -118,7 +124,7 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 			var coordinates: Vector2 = current + direction
 			# This is an "optimization". It does the same thing as our `if current in array:` above
 			# but repeating it here with the neighbors skips some instructions.
-			if is_occupied(coordinates):
+			if is_occupied(coordinates) && _units[coordinates] != _units[cell]:
 				continue
 			if coordinates in array:
 				continue
@@ -144,6 +150,7 @@ func _select_active_unit(cell: Vector2) -> void:
 		# I decided to group everything in the GameBoard class because it keeps all the selection logic
 		# in one place. I find it easy to keep track of what the class does this way.
 		_active_unit = _units[cell]
+		_unit_base = _units[cell].base
 		_active_unit.isSelected = true
 		_walkable_cells = get_walkable_cells(_active_unit)
 		_unit_overlay.draw(_walkable_cells)

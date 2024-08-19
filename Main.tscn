@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://uqcm7ckaicr7"]
+[gd_scene load_steps=9 format=3 uid="uid://uqcm7ckaicr7"]
 
 [ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
 [ext_resource type="Script" path="res://game_board.gd" id="2_o4r1v"]
 [ext_resource type="PackedScene" uid="uid://ixme7eh3gids" path="res://UnitAssets/UnitOverlay/unit_overlay.tscn" id="3_qaid1"]
 [ext_resource type="PackedScene" uid="uid://ukn87x0yagba" path="res://Pathfinder/unit_path.tscn" id="4_4j1ps"]
 [ext_resource type="PackedScene" uid="uid://gj0i45h5x1ae" path="res://UnitAssets/unit.tscn" id="5_xtiok"]
+[ext_resource type="Texture2D" uid="uid://drkk7eoaeham2" path="res://UnitAssets/mech.bmp" id="6_bdio8"]
 [ext_resource type="Script" path="res://camera.gd" id="7_1ow0n"]
 [ext_resource type="PackedScene" uid="uid://c7mwedqteqa0g" path="res://CursorAssets/cursor.tscn" id="7_mwcw3"]
 
@@ -23,13 +24,17 @@ script = ExtResource("2_o4r1v")
 
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(784, 584)
+skin = ExtResource("6_bdio8")
 isPlayerControllable = true
+size = 5
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 position = Vector2(-22, 18)
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(944, 584)
+isPlayerControllable = true
+size = 1
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)

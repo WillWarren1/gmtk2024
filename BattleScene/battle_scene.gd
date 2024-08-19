@@ -84,7 +84,7 @@ func _process(delta):
 			await get_tree().create_timer(.5).timeout
 			step = 4
 		4:
-			print("ANIMATION")
+			#print("ANIMATION")
 			counter += 1
 			if counter >= 10:
 				step = 5
