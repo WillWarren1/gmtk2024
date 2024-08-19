@@ -91,7 +91,7 @@ func _ready() -> void:
 			shootSound = "res://Audio/SFX/MechShoot.wav"
 			hitSound = "res://Audio/SFX/MechHit.wav"
 			selectSound = "res://Audio/SFX/MechSelect.wav"
-			
+
 			statsController.stats.weaponRange = 8
 			statsController.stats.meleeRange = 3
 			statsController.stats.weaponDamage = 8
@@ -203,12 +203,7 @@ func _process(delta: float) -> void:
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
 		emit_signal("walk_finished")
-<< << << < HEAD
 		audioMove.stop()
-	
-== == == =
-
->> >> >> > cb432e0(Fix for targettingbigunits)
 
 
 func walk_along(path: PackedVector2Array) -> void:
@@ -222,7 +217,7 @@ func walk_along(path: PackedVector2Array) -> void:
 	cell = path[-1]
 	self.isWalking = true
 	audioMove.play()
-	
+
 
 func set_cell(value: Vector2) -> void:
 	cell = grid.clamp(value)
