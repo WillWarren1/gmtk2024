@@ -24,12 +24,18 @@ script = ExtResource("2_o4r1v")
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(784, 584)
 isPlayerControllable = true
+hurtSprite = "infantryHurt"
+idleSprite = "infantryIdle"
+shootSprite = null
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 position = Vector2(-22, 18)
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(944, 584)
+hurtSprite = "infantryHurt"
+idleSprite = "infantryIdle"
+shootSprite = null
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)

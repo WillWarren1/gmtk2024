@@ -5,9 +5,12 @@ extends Path2D
 signal walk_finished
 
 @export var grid: Resource = preload("res://Grid.tres")
-@export var skin: Texture: set = set_skin
+#@export var skin: Texture: set = set_skin
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
 @export var isPlayerControllable := false
+@export var hurtSprite: String = "infantryHurt"
+@export var idleSprite: String = "infantryIdle"
+@export var shootSprite: String = "infantryShoot"
 
 var cell := Vector2.ZERO: set = set_cell
 var base: Rect2
@@ -15,17 +18,19 @@ var isSelected := false: set = set_is_selected
 
 var isWalking := false: set = _set_is_walking
 
-@onready var _sprite: Sprite2D = $PathFollow2D/UnitSprite
+
+@onready var _sprite: AnimatedSprite2D = $PathFollow2D/UnitSprite
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
 @onready var statsController: Node2D = $Stats
+@onready var hurtTimer = $Timer
+@onready var shootTimer = $Timer2
 
 func _draw() -> void:
 	draw_rect(base, Color.ALICE_BLUE, false, 1.0)
 
 
 func _ready() -> void:
-	set_process(false)
 
 	print(grid.calculate_grid_coordinates(position))
 	self.cell = grid.calculate_grid_coordinates(position)
@@ -40,8 +45,6 @@ func _ready() -> void:
 
 
 
-
-
 func _process(delta: float) -> void:
 	_path_follow.progress += statsController.stats.speed * delta
 
@@ -51,6 +54,7 @@ func _process(delta: float) -> void:
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
 		emit_signal("walk_finished")
+	
 
 
 func walk_along(path: PackedVector2Array) -> void:
@@ -76,12 +80,12 @@ func set_is_selected(value: bool) -> void:
 		_anim_player.play("idle")
 
 
-func set_skin(value: Texture) -> void:
-	skin = value
-	if not _sprite:
-		# The yield keyword allows us to wait until the unit node's `_ready()` callback ended.
-		await _ready()
-	_sprite.texture = value
+#func set_skin(value: Texture) -> void:
+	#skin = value
+	#if not _sprite:
+		## The yield keyword allows us to wait until the unit node's `_ready()` callback ended.
+		#await _ready()
+	#_sprite.texture = value
 
 
 func set_skin_offset(value: Vector2) -> void:
@@ -95,3 +99,17 @@ func set_skin_offset(value: Vector2) -> void:
 func _set_is_walking(value: bool) -> void:
 	isWalking = value
 	set_process(isWalking)
+
+func attack():
+	_sprite.play(shootSprite)
+	shootTimer.start()
+
+func hurt(damage):
+	_sprite.play(hurtSprite)
+	hurtTimer.start()
+
+func hurt_finished():
+	_sprite.play(idleSprite)
+
+func attack_finished() -> void:
+	_sprite.play(idleSprite)
