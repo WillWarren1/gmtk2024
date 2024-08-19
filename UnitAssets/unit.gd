@@ -28,6 +28,7 @@ var isWalking := false: set = _set_is_walking
 
 
 @onready var _sprite: AnimatedSprite2D = $PathFollow2D/UnitSprite
+@onready var _shadow_sprite: Sprite2D = $PathFollow2D/ShadowSprite
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
 @onready var statsController: Node2D = $Stats
@@ -41,11 +42,31 @@ var isWalking := false: set = _set_is_walking
 
 
 func _ready() -> void:
+	if isPlayerControllable == false:
+		scale.x = -1
 	match unitClass:
 		"Infantry":
 			hurtSprite = "infantryHurt"
 			idleSprite = "infantryIdle"
 			shootSprite = "infantryShoot"
+			
+			statsController.stats.weaponRange = 3
+			statsController.stats.meleeRange = 1
+			statsController.stats.weaponDamage = 3
+			statsController.stats.meleeDamage = 1
+			statsController.stats.movementRange = 6
+			statsController.stats.speed = 600.0
+			statsController.stats.maxHealth = 10
+			statsController.stats.currentHealth = 10
+			size = 1
+			statsController.stats.currentAmmo = 6
+			statsController.stats.maxAmmo = 6
+			statsController.stats.defense = 2
+			statsController.stats.attackCounter = 40
+		"EnemyInfantry":
+			hurtSprite = "enemyInfantryHurt"
+			idleSprite = "enemyInfantryIdle"
+			shootSprite = "enemyInfantryShoot"
 			
 			statsController.stats.weaponRange = 3
 			statsController.stats.meleeRange = 1
@@ -82,10 +103,13 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
 			statsController.stats.attackCounter = 240
+			_shadow_sprite.scale = Vector2(4,4)
+			_shadow_sprite.position.y = 64
+			
 		"EnemyMech":
-			hurtSprite = "mechHurt"
-			idleSprite = "mechIdle"
-			shootSprite = "mechShoot"
+			hurtSprite = "enemyMechHurt"
+			idleSprite = "enemyMechIdle"
+			shootSprite = "enemyMechShoot"
 			walkSound = "res://Audio/SFX/MechMove.wav"
 			shootSound = "res://Audio/SFX/MechShoot.wav"
 			hitSound = "res://Audio/SFX/MechHit.wav"
@@ -104,6 +128,8 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
 			statsController.stats.attackCounter = 240
+			_shadow_sprite.scale = Vector2(4,4)
+			_shadow_sprite.position.y = 64
 		"Carrier":
 			hurtSprite = "carrierHurt"
 			idleSprite = "carrierIdle"
@@ -126,6 +152,31 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 24
 			statsController.stats.defense = 4
 			statsController.stats.attackCounter = 40
+		"EnemyTurret":
+			_sprite.position.y = -32
+			hurtSprite = "enemyTurretHurt"
+			idleSprite = "enemyTurretIdle"
+			shootSprite = "enemyTurretShoot"
+			walkSound = "res://Audio/SFX/MechMove.wav"
+			shootSound = "res://Audio/SFX/MechShoot.wav"
+			hitSound = "res://Audio/SFX/MechHit.wav"
+			selectSound = "res://Audio/SFX/MechSelect.wav"
+			
+			statsController.stats.weaponRange = 13
+			statsController.stats.meleeRange = 0
+			statsController.stats.weaponDamage = 8
+			statsController.stats.meleeDamage = 0
+			statsController.stats.movementRange = 0
+			statsController.stats.speed = 0.0
+			statsController.stats.maxHealth = 30
+			statsController.stats.currentHealth = 30
+			size = 5
+			statsController.stats.currentAmmo = 12
+			statsController.stats.maxAmmo = 12
+			statsController.stats.defense = 3
+			statsController.stats.attackCounter = 240
+
+
 
 	print(grid.calculate_grid_coordinates(position))
 	self.cell = grid.calculate_grid_coordinates(position)

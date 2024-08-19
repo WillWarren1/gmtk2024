@@ -48,6 +48,10 @@ func _ready():
 	atkShoot = attacker.shootSprite
 	atkHurt = attacker.hurtSprite
 	
+	defIdle = defender.idleSprite
+	defShoot = defender.shootSprite
+	defHurt = defender.hurtSprite
+	
 	atkPaney = atkPane.position.y
 	defPaney = defPane.position.y
 	atkPane.position.y -= 500
@@ -66,12 +70,12 @@ func _ready():
 	defAudio.stream = load(attacker.hitSound)
 	camera = get_tree().get_first_node_in_group("Camera")
 	
-	if attacker.unitClass == "Mech":
+	if attacker.unitClass == "Mech" or attacker.unitClass == "EnemyMech" or attacker.unitClass == "EnemyTurret":
 		atkAnimSprite.scale = Vector2(2,2)
 		defAnimSprite.scale = Vector2(-2,2)
 	if attacker.unitClass == "Carrier":
-		atkAnimSprite.scale = Vector2(1,1)
-		defAnimSprite.scale = Vector2(-1,1)
+		atkAnimSprite.scale = Vector2(3,3)
+		defAnimSprite.scale = Vector2(-2,2)
 	atkAnimSprite.play(atkIdle)
 	defAnimSprite.play(defIdle)
 
@@ -110,7 +114,7 @@ func _process(delta):
 		2:
 			atkAnimSprite.play(atkShoot)
 			attacker.attack()
-			readoutPanel.text = "ATTACKER ATTACKS FOR " + str(atkStr)
+			readoutPanel.text = "ATTACKER ATTACKS"
 			step = 3
 		3:
 			await get_tree().create_timer(.5).timeout
@@ -149,7 +153,7 @@ func _process(delta):
 		7:
 			readoutPanel.text = "CRITICAL HIT! " + str(atkStr + floor(atkStr/2)) + " DAMAGE!"
 			if damageDone == false:
-				defHpCurr -= atkStr
+				defHpCurr -= atkStr + floor(atkStr/2)
 				defender.statsController.stats.currentHealth = defHpCurr
 				defender.hurt(atkStr + floor(atkStr/2))
 				damageDone = true
