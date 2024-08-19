@@ -155,7 +155,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fd7xy")
 }],
-"loop": true,
+"loop": false,
 "name": &"infantryShoot",
 "speed": 5.0
 }, {
@@ -211,8 +211,11 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_x2ebh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_11f7o")
 }],
-"loop": true,
+"loop": false,
 "name": &"mechShoot",
 "speed": 5.0
 }]
