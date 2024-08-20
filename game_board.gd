@@ -38,11 +38,15 @@ var _pathfinder: PathFinder
 # Mapping of coordinates of a cell to a reference to the unit it contains.
 var _units := {}
 
+var turncontroller
+
 
 # At the start of the game, we initialize the game board. Look at the `_reinitialize()` function below.
 # It populates our `_units` dictionary.
 func _ready() -> void:
 	_reinitialize()
+	
+	turncontroller = get_tree().get_first_node_in_group("TurnController")
 
 
 func _process(delta: float) -> void:
@@ -308,7 +312,18 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# that we want to give it a move order.
 	print("active unit", _active_unit)
 	if not _active_unit:
-		pass
+		if turncontroller.deployMode == true:
+			if !is_occupied(cell):
+				var targetCell = cell
+				print(turncontroller.turnArray[turncontroller.currentTurn].cell.distance_to(cell*Vector2(32,32) / 32))
+				if floor(turncontroller.turnArray[turncontroller.currentTurn].cell.distance_to(cell*Vector2(32,32)/ 32))  <= turncontroller.turnArray[turncontroller.currentTurn].deploydistance:
+					print("Target is close enough, TIME TO DEPLOY!")
+					turncontroller.turnArray[turncontroller.currentTurn].deploy_unit(cell)
+				else:
+					print("Target is too far away. Fuck you.")
+					turncontroller.deployMode = false
+			else:
+				turncontroller.deployMode = false
 		#_select_active_unit(cell)
 	elif _active_unit.isSelected:
 		print("is_occupied(cell) = ", is_occupied(cell))

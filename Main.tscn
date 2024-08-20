@@ -31,18 +31,14 @@ script = ExtResource("2_o4r1v")
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(720, 464)
+position = Vector2(400, 720)
 isPlayerControllable = true
+unitClass = "Carrier"
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(976, 592)
 unitClass = "EnemyInfantry"
 activeEnemy = true
-
-[node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(912, 880)
-isPlayerControllable = true
-unitClass = "Mech"
 
 [node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(912, 720)

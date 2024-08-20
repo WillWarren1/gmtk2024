@@ -14,6 +14,9 @@ var activeUnit
 var currentTurn = 0
 var turnStep = 0
 
+var storeMode = false
+var deployMode = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	gameboard = get_tree().get_first_node_in_group("Gameboard")
@@ -27,7 +30,7 @@ func _process(delta: float) -> void:
 	#activeUnit = playerArmyActive[0]
 	#print(turnStep)
 	if turnStep == 0:
-		if currentTurn == turnArray.size():
+		if currentTurn == turnArray.size()-1:
 			print("NEW ROUND!!!!")
 			get_armies()
 			create_turn_order()
@@ -49,7 +52,7 @@ func _process(delta: float) -> void:
 		if turnArray[currentTurn].isPlayerControllable:
 			turnUI.activated = true
 		else:
-			enemy_ai(turnArray[currentTurn])
+			pass
 		turnStep = 3
 		return
 	elif turnStep == 3:
@@ -139,34 +142,7 @@ func _on_end_turn_pressed() -> void:
 	turnUI.activated = false
 	iterate_turn()
 
-func enemy_ai(unit):
-	pass
-	#print("PEEPEE POOPOO! I AM " + str(unit) + "And it's my turn!")
-	#
-	#
-	#var distance_holder = 100000
-	#var target
-	##find nearest player unit
-	#for i in playerArmyActive:
-		#if unit.global_position.distance_to(i.global_position) < distance_holder:
-			#target = i
-			#distance_holder = unit.global_position.distance_to(i.global_position)
-	#print("My Target is " + str(target))
-	#print("My Target is in cell " + str(target.cell))
-	#turnStep = 4
-	#check if player unit is in range and attack if so
-	#if distance_holder <= unit.statsController.stats.weaponRange:
-		#print("THE DUDE IS IN RANGE!!!!!!!!!")
-		#var combatInstance = combatScene.instantiate()
-		#combatInstance.position = get_viewport_rect().size / 2
-		#combatInstance.attacker = unit
-		#combatInstance.defender = target.cell
-		#gameboard.add_child(combatInstance)
-	#else:
-		#print("THE DUDE IS NOT IN RANGE >:c")
-		##iterate_turn()
-		#turnStep = 4
-		#print(turnStep)
+
 
 func findAttackTarget(unit):
 	var distance_holder = 100000
@@ -194,3 +170,11 @@ func findAttackTarget(unit):
 func _on_moveand_atk_pressed() -> void:
 	gameboard._active_unit = null
 	gameboard._select_active_unit(turnArray[currentTurn].cell)
+
+
+
+func _on_deploy_pressed() -> void:
+	print("Deploy Mode Activated")
+	print("Unit inventory is ",turnArray[currentTurn].inventory)
+	if turnArray[currentTurn].inventory > 0:
+		deployMode = true

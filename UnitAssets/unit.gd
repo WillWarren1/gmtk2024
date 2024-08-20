@@ -23,6 +23,12 @@ var hitSound: String = "res://Audio/SFX/SoldierHit.wav"
 var cell := Vector2.ZERO: set = set_cell
 var base: Array
 var isSelected := false: set = set_is_selected
+var inventory = 0
+var deploytype = "Infantry"
+var deploydistance = 2
+
+var turncontroller
+var gameboard
 
 var isWalking := false: set = _set_is_walking
 
@@ -40,12 +46,16 @@ var isWalking := false: set = _set_is_walking
 @onready var audioMove = $AudioMove
 @onready var audioSelect = $AudioSelect
 
+var _unitNode = preload("res://UnitAssets/unit.tscn")
+
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 #func _draw() -> void:
 	#draw_rect(base, Color.ALICE_BLUE, false, 1.0)
 
 
 func _ready() -> void:
+	turncontroller = get_tree().get_first_node_in_group("TurnController")
+	gameboard = get_tree().get_first_node_in_group("Gameboard")
 	if isPlayerControllable == false:
 		scale.x = -1
 	else:
@@ -113,7 +123,9 @@ func _ready() -> void:
 			statsController.stats.attackCounter = 240
 			_shadow_sprite.scale = Vector2(4, 4)
 			_shadow_sprite.position.y = 64
-
+			inventory = 5
+			deploydistance = 4
+			deploytype = "Infantry"
 		"EnemyMech":
 			hurtSprite = "enemyMechHurt"
 			idleSprite = "enemyMechIdle"
@@ -161,6 +173,9 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 24
 			statsController.stats.defense = 4
 			statsController.stats.attackCounter = 40
+			inventory = 3
+			deploydistance = 9
+			deploytype = "Mech"
 		"EnemyTurret":
 			_sprite.position.y = -32
 			hurtSprite = "enemyTurretHurt"
@@ -282,10 +297,48 @@ func store_unit(container):
 	isStored = true
 	position = Vector2(-1000,-1000)
 	print(str(self) + " Stored!")
+	cell = Vector2(-10,-10)
+	set_process(false)
+	get_parent()._reinitialize()
 	#add unit to it's container's inventory
 
-func deploy_unit(target_position):
-	isStored = false
-	position = target_position
-	print(str(self) + " Deployed at " + str(target_position))
+func deploy_unit(target_cell):
+	var deployunit = _unitNode.instantiate()
+	deployunit.unitClass = deploytype
+	deployunit.global_position = Vector2(target_cell) * Vector2(32,32)
+	deployunit.isPlayerControllable = true
+	get_parent().add_child(deployunit)
+	match deployunit.unitClass:
+		"Mech":
+			deployunit.hurtSprite = "mechHurt"
+			deployunit.idleSprite = "mechIdle"
+			deployunit.shootSprite = "mechShoot"
+			deployunit.walkSound = "res://Audio/SFX/MechMove.wav"
+			deployunit.shootSound = "res://Audio/SFX/MechShoot.wav"
+			deployunit.hitSound = "res://Audio/SFX/MechHit.wav"
+			deployunit.selectSound = "res://Audio/SFX/MechSelect.wav"
+			deployunit.statsController.stats.weaponRange = 8
+			deployunit.statsController.stats.meleeRange = 3
+			deployunit.statsController.stats.weaponDamage = 8
+			deployunit.statsController.stats.meleeDamage = 3
+			deployunit.statsController.stats.maxMovementRange = 10
+			deployunit.statsController.stats.currentMovementRange = 10
+			deployunit.statsController.stats.speed = 500.0
+			deployunit.statsController.stats.maxHealth = 30
+			deployunit.statsController.stats.currentHealth = 30
+			deployunit.size = 5
+			deployunit.statsController.stats.currentAmmo = 12
+			deployunit.statsController.stats.maxAmmo = 12
+			deployunit.statsController.stats.defense = 3
+			deployunit.statsController.stats.attackCounter = 240
+			deployunit._shadow_sprite.scale = Vector2(4, 4)
+			deployunit._shadow_sprite.position.y = 64
+			deployunit.inventory = 5
+			deployunit.deploydistance = 4
+			deployunit.deploytype = "Infantry"
+	print("INVENTORY = ",deployunit.inventory)
+	inventory -= 1
+	turncontroller.deployMode = false
+	turncontroller.get_armies()
+	turncontroller.iterate_turn()
 	#remove unit from it's container's inventory

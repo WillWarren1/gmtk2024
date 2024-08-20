@@ -15,34 +15,26 @@ script = ExtResource("2_pec33")
 [node name="EndTurn" type="Button" parent="TurnUI"]
 layout_mode = 0
 offset_left = 16.0
-offset_top = 256.0
+offset_top = 224.0
 offset_right = 176.0
-offset_bottom = 312.0
+offset_bottom = 304.0
 text = "END TURN
 "
 
 [node name="Deploy" type="Button" parent="TurnUI"]
 layout_mode = 0
-offset_left = 40.0
-offset_top = 168.0
-offset_right = 152.0
-offset_bottom = 216.0
+offset_left = 16.0
+offset_top = 128.0
+offset_right = 176.0
+offset_bottom = 176.0
 theme_override_font_sizes/font_size = 14
 text = "DEPLOY"
 
-[node name="Store" type="Button" parent="TurnUI"]
-offset_left = 40.0
-offset_top = 96.0
-offset_right = 152.0
-offset_bottom = 144.0
-theme_override_font_sizes/font_size = 14
-text = "STORE"
-
 [node name="MoveandAtk" type="Button" parent="TurnUI"]
-offset_left = 40.0
-offset_top = 24.0
-offset_right = 152.0
-offset_bottom = 72.0
+offset_left = 16.0
+offset_top = 40.0
+offset_right = 176.0
+offset_bottom = 88.0
 theme_override_font_sizes/font_size = 14
 text = "MOVE/ATTACK
 "
@@ -56,5 +48,12 @@ offset_bottom = -1.0
 text = "_'s Turn"
 horizontal_alignment = 1
 
+[node name="DeployUI" type="Panel" parent="."]
+offset_left = -144.0
+offset_top = 56.0
+offset_right = -104.0
+offset_bottom = 96.0
+
 [connection signal="pressed" from="TurnUI/EndTurn" to="." method="_on_end_turn_pressed"]
+[connection signal="pressed" from="TurnUI/Deploy" to="." method="_on_deploy_pressed"]
 [connection signal="pressed" from="TurnUI/MoveandAtk" to="." method="_on_moveand_atk_pressed"]
