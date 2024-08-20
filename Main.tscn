@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://camera.gd" id="7_1ow0n"]
 [ext_resource type="PackedScene" uid="uid://c7mwedqteqa0g" path="res://CursorAssets/cursor.tscn" id="7_mwcw3"]
 [ext_resource type="AudioStream" uid="uid://llep1d6mwro5" path="res://Audio/Music/Drums.wav" id="8_afvp5"]
-[ext_resource type="PackedScene" uid="uid://cl1xo7wh3oled" path="res://turn_controller.tscn" id="9_m2xjo"]
+[ext_resource type="PackedScene" path="res://turn_controller.tscn" id="9_m2xjo"]
 
 [node name="Main" type="Node2D" groups=["Main"]]
 script = ExtResource("1_dwdtq")
