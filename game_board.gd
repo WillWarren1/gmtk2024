@@ -218,16 +218,6 @@ func _select_active_unit(cell: Vector2) -> void:
 		_target_overlay.draw(_targetable_cells)
 		var _pathable_cells = get_walkable_cells(_active_unit)
 		_unit_path.initialize(_pathable_cells)
-	else:
-		_active_unit = _units[cell]
-		_unit_base = _units[cell].base
-		_active_unit.isSelected = true
-		_walkable_cells = get_walkable_cells(_active_unit)
-		_unit_overlay.draw(_walkable_cells)
-		_targetable_cells = get_targetable_cells(_active_unit)
-		_target_overlay.draw(_targetable_cells)
-		var _pathable_cells = get_walkable_cells(_active_unit)
-		_unit_path.initialize(_pathable_cells)
 
 func _select_target_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not

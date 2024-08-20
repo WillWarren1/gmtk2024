@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var turnUI = $TurnUI
+@export var combatScene: PackedScene = preload("res://BattleScene/battle_scene.tscn")
 
 var playerArmy: Array
 var playerArmyActive: Array
@@ -24,35 +25,45 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	#activeUnit = playerArmyActive[0]
-	match turnStep:
-		0:
-			if currentTurn == turnArray.size():
-				print("NEW ROUND!!!!")
-				get_armies()
-				create_turn_order()
-			else:
-				print("Turn " + str(currentTurn))
-			turnStep = 1
-		1:
-			if is_instance_valid(turnArray[currentTurn]):
-				snap_to_unit(turnArray[currentTurn])
-				turnStep = 2
-			else:
+	#print(turnStep)
+	if turnStep == 0:
+		if currentTurn == turnArray.size():
+			print("NEW ROUND!!!!")
+			get_armies()
+			create_turn_order()
+		else:
+			print("Turn " + str(currentTurn))
+		turnStep = 1
+		return
+	elif turnStep == 1:
+		print("ITS STEP 1~!")
+		if is_instance_valid(turnArray[currentTurn]):
+			snap_to_unit(turnArray[currentTurn])
+			turnStep = 2
+		else:
+			iterate_turn()
+		return
+	elif turnStep == 2:
+		print("ITS STEP 2~!")
+		#gameboard._select_active_unit(turnArray[currentTurn].cell)
+		if turnArray[currentTurn].isPlayerControllable:
+			turnUI.activated = true
+		else:
+			enemy_ai(turnArray[currentTurn])
+		turnStep = 3
+		return
+	elif turnStep == 3:
+		#print("ITS STEP 3~!")
+		if !turnArray[currentTurn].isPlayerControllable:
+			if findAttackTarget(turnArray[currentTurn]) == true:
 				iterate_turn()
-		2:
-			#gameboard._select_active_unit(turnArray[currentTurn].cell)
-			if turnArray[currentTurn].isPlayerControllable:
-				turnUI.activated = true
 			else:
-				enemy_ai(turnArray[currentTurn])
-			turnStep = 3
-		3:
-			if !turnArray[currentTurn].isPlayerControllable:
-				#iterate_turn()
+				turnStep = 4
+		else:
+			if turnArray[currentTurn].isSelected == false:
 				pass
-			else:
-				if turnArray[currentTurn].isSelected == false:
-					pass
+		return
+
 
 	
 	
@@ -129,9 +140,35 @@ func _on_end_turn_pressed() -> void:
 	iterate_turn()
 
 func enemy_ai(unit):
-	print("PEEPEE POOPOO! I AM " + str(unit) + "And it's my turn!")
-	
-	
+	pass
+	#print("PEEPEE POOPOO! I AM " + str(unit) + "And it's my turn!")
+	#
+	#
+	#var distance_holder = 100000
+	#var target
+	##find nearest player unit
+	#for i in playerArmyActive:
+		#if unit.global_position.distance_to(i.global_position) < distance_holder:
+			#target = i
+			#distance_holder = unit.global_position.distance_to(i.global_position)
+	#print("My Target is " + str(target))
+	#print("My Target is in cell " + str(target.cell))
+	#turnStep = 4
+	#check if player unit is in range and attack if so
+	#if distance_holder <= unit.statsController.stats.weaponRange:
+		#print("THE DUDE IS IN RANGE!!!!!!!!!")
+		#var combatInstance = combatScene.instantiate()
+		#combatInstance.position = get_viewport_rect().size / 2
+		#combatInstance.attacker = unit
+		#combatInstance.defender = target.cell
+		#gameboard.add_child(combatInstance)
+	#else:
+		#print("THE DUDE IS NOT IN RANGE >:c")
+		##iterate_turn()
+		#turnStep = 4
+		#print(turnStep)
+
+func findAttackTarget(unit):
 	var distance_holder = 100000
 	var target
 	#find nearest player unit
@@ -139,17 +176,20 @@ func enemy_ai(unit):
 		if unit.global_position.distance_to(i.global_position) < distance_holder:
 			target = i
 			distance_holder = unit.global_position.distance_to(i.global_position)
+	distance_holder = floor(distance_holder/32)
 	print("My Target is " + str(target))
-	print("My Target is in cell " + str(target.cell))
-	#check if player unit is in range and attack if so
-	print(unit.cell)
-	gameboard._select_active_unit(unit.cell)
-	gameboard.get_walkable_cells(unit)
-	gameboard._move_active_unit(Vector2(16,28))
-	#otherwise move towards them
-	
-	#check if player unit is in range again and attack if so
-
+	print("Distance to Target is " + str(distance_holder) + " Tiles away And my Range is " + str(unit.statsController.stats.weaponRange))
+	if distance_holder <= unit.statsController.stats.weaponRange:
+		print("THE DUDE IS IN RANGE!!!!!!!!!")
+		var combatInstance = combatScene.instantiate()
+		combatInstance.position = get_viewport_rect().size / 2
+		combatInstance.attacker = unit
+		combatInstance.defender = target
+		gameboard.add_child(combatInstance)
+	else:
+		print("THE DUDE IS NOT IN RANGE >:c")
+		return true
+	return false
 
 func _on_moveand_atk_pressed() -> void:
 	gameboard._active_unit = null
