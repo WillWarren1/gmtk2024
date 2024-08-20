@@ -32,6 +32,20 @@ script = ExtResource("2_o4r1v")
 position = Vector2(592, 520)
 scale = Vector2(1, 1)
 isPlayerControllable = true
+unitClass = "Carrier"
+
+[node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
+position = Vector2(16, 16)
+
+[node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
+position = Vector2(976, 560)
+unitClass = "EnemyInfantry"
+activeEnemy = true
+
+[node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
+position = Vector2(848, 648)
+scale = Vector2(1, 1)
+isPlayerControllable = true
 unitClass = "Mech"
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
