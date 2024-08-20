@@ -13,7 +13,8 @@ extends Node
 	"currentAmmo":6,
 	"maxAmmo":6,
 	"defense":2,
-	"attackCounter":24
+	"attackCounter":24,
+	"inventorySize":4
 }
 
 func edit_stat(stat, amount):

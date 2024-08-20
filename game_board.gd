@@ -308,7 +308,8 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# that we want to give it a move order.
 	print("active unit", _active_unit)
 	if not _active_unit:
-		_select_active_unit(cell)
+		pass
+		#_select_active_unit(cell)
 	elif _active_unit.isSelected:
 		print("is_occupied(cell) = ", is_occupied(cell))
 		if is_occupied(cell) && _units[cell] != _active_unit:
