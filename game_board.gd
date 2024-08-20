@@ -26,6 +26,7 @@ var _hovered_unit: Unit
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
 var _targetable_cells := []
+var exclusionZone := []
 
 var _unit_base: Array
 
@@ -54,7 +55,7 @@ func _process(delta: float) -> void:
 	else:
 		if !cursor.targetSprite.visible:
 			cursor.targetSprite.visible = true
-		if _hovered_unit &&  is_instance_valid(_hovered_unit) && _hovered_unit.baseHighlighter.visible:
+		if _hovered_unit && is_instance_valid(_hovered_unit) && _hovered_unit.baseHighlighter.visible:
 			_hovered_unit.baseHighlighter.visible = false
 		_hovered_unit = null
 
@@ -85,6 +86,11 @@ func _reinitialize() -> void:
 		for baseCell in unit.base:
 			_units[baseCell] = unit
 
+func removeCellsFromList(excludeList: Array, originList: Array) -> Array:
+	for cellToExclude in excludeList:
+		if originList.has(cellToExclude):
+			originList.erase(cellToExclude)
+	return originList
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
 func get_walkable_cells(unit: Unit) -> Array:
@@ -99,7 +105,7 @@ func get_targetable_cells(unit: Unit) -> Array:
 func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false) -> Array:
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
-	var exclusionZone := []
+	#var exclusionZone := []
 	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
 	# cell we want to apply the flood fill algorithm to.
 	var stack := [cell]
@@ -124,7 +130,6 @@ func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false)
 		if distance > max_distance:
 			continue
 
-#		Currently only works for small units, make isWalkable dynamic by unit size once we have multiple unit sizes
 		var tileData = tileMap.get_cell_tile_data(0, current)
 		var isWalkable = false
 		if _units[cell].unitClass == "Infantry":
@@ -152,7 +157,14 @@ func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false)
 				if !isForAttacking:
 					continue
 				elif _units[coordinates].isPlayerControllable:
-					continue
+						continue
+					#var targetDifference: Vector2 = (current - cell).abs()
+					#var distanceFromCell := int(targetDifference.x + targetDifference.y)
+					#print("distanceFromCell", distanceFromCell)
+					#if distanceFromCell > _active_unit.statsController.stats.currentMovementRange:
+						#print("YIPPEE")
+						##exclusionZone.append(coordinates)
+						#continue
 			if coordinates in array:
 				continue
 
@@ -162,18 +174,25 @@ func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false)
 	if !isForAttacking:
 #		the exclusionZone is a zone of cells that we don't want units to navigate to
 #		removing any cell from an exclusionzone prevents visual issues from larger units occupying the space next to smaller ones.
-		for cellToExclude in exclusionZone:
-			if array.has(cellToExclude):
-				array.erase(cellToExclude)
+		print("removing cells...")
+		array = removeCellsFromList(exclusionZone, array)
+		print("removing cells...")
+
+
 #	now run through pathfinding for every cell in array, if theres no valid path to cell, remove it from array.
 	_pathfinder = PathFinder.new(grid, array)
+	var finalFilterList := []
 	for floodCell in array:
 		var floodPath: PackedVector2Array = _pathfinder.calculate_point_path(cell, floodCell)
-		if floodCell == Vector2(26,17):
-			print("floodpath", floodPath)
+		if !isForAttacking:
+			var semiFinalFilterList := []
+			for poop in floodPath:
+				if exclusionZone.has(poop):
+					semiFinalFilterList.append(poop)
+			array = array.filter(func(cell): return !finalFilterList.has(cell))
 		if floodPath.size() == 0:
-			array.erase(floodCell)
-	return array
+			finalFilterList.append(floodCell)
+	return array.filter(func(potentiallyYuckyTile): return !finalFilterList.has(potentiallyYuckyTile))
 
 # Selects the unit in the `cell` if there's one there.
 # Sets it as the `_active_unit` and draws its walkable cells and interactive move path.
