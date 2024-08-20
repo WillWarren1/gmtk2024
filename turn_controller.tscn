@@ -1,6 +1,60 @@
-[gd_scene load_steps=2 format=3 uid="uid://d4aqk6xpmnt7g"]
+[gd_scene load_steps=3 format=3 uid="uid://d4aqk6xpmnt7g"]
 
 [ext_resource type="Script" path="res://turn_controller.gd" id="1_d4fkh"]
+[ext_resource type="Script" path="res://turn_ui.gd" id="2_pec33"]
 
-[node name="TurnController" type="Node2D"]
+[node name="TurnController" type="Node2D" groups=["TurnController"]]
 script = ExtResource("1_d4fkh")
+
+[node name="TurnUI" type="Panel" parent="."]
+z_index = 10
+offset_right = 192.0
+offset_bottom = 320.0
+script = ExtResource("2_pec33")
+
+[node name="EndTurn" type="Button" parent="TurnUI"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 256.0
+offset_right = 176.0
+offset_bottom = 312.0
+text = "END TURN
+"
+
+[node name="Deploy" type="Button" parent="TurnUI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 168.0
+offset_right = 152.0
+offset_bottom = 216.0
+theme_override_font_sizes/font_size = 14
+text = "DEPLOY"
+
+[node name="Store" type="Button" parent="TurnUI"]
+offset_left = 40.0
+offset_top = 96.0
+offset_right = 152.0
+offset_bottom = 144.0
+theme_override_font_sizes/font_size = 14
+text = "STORE"
+
+[node name="MoveandAtk" type="Button" parent="TurnUI"]
+offset_left = 40.0
+offset_top = 24.0
+offset_right = 152.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 14
+text = "MOVE/ATTACK
+"
+
+[node name="Label" type="Label" parent="TurnUI"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -24.0
+offset_right = 200.0
+offset_bottom = -1.0
+text = "_'s Turn"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="TurnUI/EndTurn" to="." method="_on_end_turn_pressed"]
+[connection signal="pressed" from="TurnUI/MoveandAtk" to="." method="_on_moveand_atk_pressed"]

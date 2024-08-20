@@ -31,12 +31,22 @@ script = ExtResource("2_o4r1v")
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(752, 528)
+position = Vector2(720, 464)
 isPlayerControllable = true
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(976, 592)
 unitClass = "EnemyInfantry"
+activeEnemy = true
+
+[node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
+position = Vector2(592, 592)
+isPlayerControllable = true
+unitClass = "Mech"
+
+[node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
+position = Vector2(912, 720)
+unitClass = "EnemyMech"
 activeEnemy = true
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
@@ -49,7 +59,7 @@ volume_db = -0.324
 autoplay = true
 
 [node name="TurnController" parent="." instance=ExtResource("9_m2xjo")]
-position = Vector2(677, 362)
+position = Vector2(-256, 328)
 
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
