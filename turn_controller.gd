@@ -129,6 +129,20 @@ func _on_end_turn_pressed() -> void:
 
 func enemy_ai(unit):
 	print("PEEPEE POOPOO! I AM " + str(unit) + "And it's my turn!")
+	
+	
+	var distance_holder = 100000
+	var target
+	
+	#check if player unit is in range
+
+	#find nearest player unit and move towards them
+	for i in playerArmyActive:
+		if unit.global_position.distance_to(i.global_position) < distance_holder:
+			target = i
+			distance_holder = unit.global_position.distance_to(i.global_position)
+		print("My Target is " + str(target))
+	#check if player unit is in range again
 
 
 func _on_moveand_atk_pressed() -> void:
