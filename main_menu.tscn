@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://1asyt32ktc1r"]
+[gd_scene load_steps=16 format=3 uid="uid://1asyt32ktc1r"]
 
 [ext_resource type="Texture2D" uid="uid://ke8auphrc2r1" path="res://LevelTileMap/landtilemap.bmp" id="1_5cyeo"]
+[ext_resource type="Script" path="res://main_menu.gd" id="1_srvti"]
 [ext_resource type="Texture2D" uid="uid://crgg2ajr036of" path="res://UnitAssets/UnitSprites/carrier_idle.png" id="2_dosqf"]
 [ext_resource type="Texture2D" uid="uid://dfeqd8v228626" path="res://UnitAssets/UnitSprites/infantry.png" id="2_f1vpm"]
 [ext_resource type="Texture2D" uid="uid://3820ea07kruj" path="res://UnitAssets/UnitSprites/mech.png" id="4_ysgus"]
@@ -93,6 +94,7 @@ animations = [{
 }]
 
 [node name="MainMenu" type="Node2D"]
+script = ExtResource("1_srvti")
 
 [node name="Panel" type="Panel" parent="."]
 z_index = 2
@@ -100,6 +102,7 @@ offset_right = 960.0
 offset_bottom = 320.0
 
 [node name="Label" type="Label" parent="Panel"]
+layout_mode = 0
 offset_right = 960.0
 offset_bottom = 128.0
 text = "FULL SCALE ASSAULT"
@@ -108,6 +111,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PlayButton" type="Button" parent="Panel"]
+layout_mode = 0
 offset_left = 384.0
 offset_top = 128.0
 offset_right = 576.0
@@ -116,6 +120,7 @@ theme_override_font_sizes/font_size = 36
 text = "PLAY"
 
 [node name="PlayButton2" type="Button" parent="Panel"]
+layout_mode = 0
 offset_left = 384.0
 offset_top = 224.0
 offset_right = 576.0
@@ -150,3 +155,5 @@ autoplay = "Carrier"
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(480, 272)
 zoom = Vector2(2, 2)
+
+[connection signal="pressed" from="Panel/PlayButton" to="." method="_on_play_button_pressed"]

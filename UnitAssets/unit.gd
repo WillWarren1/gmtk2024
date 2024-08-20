@@ -286,6 +286,7 @@ func hurt(damage):
 		hurtTimer.start()
 	else:
 		queue_free()
+		turncontroller.get_armies()
 
 func hurt_finished():
 	_sprite.play(idleSprite)

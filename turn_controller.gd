@@ -149,9 +149,10 @@ func findAttackTarget(unit):
 	var target
 	#find nearest player unit
 	for i in playerArmyActive:
-		if unit.global_position.distance_to(i.global_position) < distance_holder:
-			target = i
-			distance_holder = unit.global_position.distance_to(i.global_position)
+		if is_instance_valid(i):
+			if unit.global_position.distance_to(i.global_position) < distance_holder:
+				target = i
+				distance_holder = unit.global_position.distance_to(i.global_position)
 	distance_holder = floor(distance_holder/32)
 	print("My Target is " + str(target))
 	print("Distance to Target is " + str(distance_holder) + " Tiles away And my Range is " + str(unit.statsController.stats.weaponRange))

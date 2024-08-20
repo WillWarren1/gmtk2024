@@ -19,11 +19,12 @@ func _process(delta: float) -> void:
 			visible = false
 		elif visible == false:
 			visible = true
-		if get_parent().turnArray[get_parent().currentTurn].inventory <= 0:
-			$Deploy.position.x = -100000
-		else:
-			$Deploy.position.x = 12
-		label.text = str(get_parent().turnArray[get_parent().currentTurn].unitClass) + "'s Turn"
+		if is_instance_valid(get_parent().turnArray[get_parent().currentTurn]):
+			if get_parent().turnArray[get_parent().currentTurn].inventory <= 0:
+				$Deploy.position.x = -100000
+			else:
+				$Deploy.position.x = 12
+			label.text = str(get_parent().turnArray[get_parent().currentTurn].unitClass) + "'s Turn"
 	else:
 		if visible == true:
 			visible = false
