@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://uqcm7ckaicr7"]
+[gd_scene load_steps=12 format=3 uid="uid://uqcm7ckaicr7"]
 
 [ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
 [ext_resource type="Script" path="res://main.gd" id="1_dwdtq"]
@@ -28,41 +28,16 @@ script = ExtResource("2_o4r1v")
 
 [node name="UnitPath" parent="GameBoard" instance=ExtResource("4_4j1ps")]
 
+[node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
+
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(592, 520)
-scale = Vector2(1, 1)
+position = Vector2(752, 528)
 isPlayerControllable = true
-unitClass = "Carrier"
-
-[node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
-position = Vector2(16, 16)
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(976, 560)
+position = Vector2(976, 592)
 unitClass = "EnemyInfantry"
 activeEnemy = true
-
-[node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(848, 648)
-scale = Vector2(1, 1)
-isPlayerControllable = true
-unitClass = "Mech"
-
-[node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
-
-[node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(976, 560)
-unitClass = "EnemyInfantry"
-activeEnemy = true
-
-[node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(848, 648)
-scale = Vector2(1, 1)
-isPlayerControllable = true
-
-[node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(1168, 624)
-unitClass = "EnemyTurret"
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)
