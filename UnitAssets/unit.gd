@@ -35,6 +35,7 @@ var isWalking := false: set = _set_is_walking
 @onready var _path_follow: PathFollow2D = $PathFollow2D
 @onready var unitPath: TileMap = $"../UnitPath"
 @onready var statsController: Node2D = $Stats
+@onready var inventory = $Inventory
 @onready var hurtTimer = $Timer
 @onready var shootTimer = $Timer2
 @onready var audioMove = $AudioMove
