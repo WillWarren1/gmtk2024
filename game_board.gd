@@ -26,7 +26,6 @@ var _hovered_unit: Unit
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
 var _targetable_cells := []
-var exclusionZone := []
 
 var _unit_base: Array
 
@@ -105,7 +104,7 @@ func get_targetable_cells(unit: Unit) -> Array:
 func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false) -> Array:
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
-	#var exclusionZone := []
+	var exclusionZone := []
 	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
 	# cell we want to apply the flood fill algorithm to.
 	var stack := [cell]
@@ -184,12 +183,12 @@ func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false)
 	var finalFilterList := []
 	for floodCell in array:
 		var floodPath: PackedVector2Array = _pathfinder.calculate_point_path(cell, floodCell)
-		if !isForAttacking:
-			var semiFinalFilterList := []
-			for poop in floodPath:
-				if exclusionZone.has(poop):
-					semiFinalFilterList.append(poop)
-			array = array.filter(func(cell): return !finalFilterList.has(cell))
+		#if !isForAttacking:
+			#var semiFinalFilterList := []
+			#for poop in floodPath:
+				#if exclusionZone.has(poop):
+					#semiFinalFilterList.append(poop)
+			#array = array.filter(func(cell): return !finalFilterList.has(cell))
 		if floodPath.size() == 0:
 			finalFilterList.append(floodCell)
 	return array.filter(func(potentiallyYuckyTile): return !finalFilterList.has(potentiallyYuckyTile))

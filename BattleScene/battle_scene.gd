@@ -47,11 +47,11 @@ func _ready():
 	atkIdle = attacker.idleSprite
 	atkShoot = attacker.shootSprite
 	atkHurt = attacker.hurtSprite
-	
+
 	defIdle = defender.idleSprite
 	defShoot = defender.shootSprite
 	defHurt = defender.hurtSprite
-	
+
 
 	atkPaney = atkPane.position.y
 	defPaney = defPane.position.y
@@ -70,29 +70,18 @@ func _ready():
 	defHpCurr = defender.statsController.stats.currentHealth
 	defAudio.stream = load(attacker.hitSound)
 	camera = get_tree().get_first_node_in_group("Camera")
-<< << << < HEAD
-	
 	if attacker.unitClass == "Mech" or attacker.unitClass == "EnemyMech" or attacker.unitClass == "EnemyTurret":
 		atkAnimSprite.scale = Vector2(2, 2)
 		defAnimSprite.scale = Vector2(-2, 2)
 	if attacker.unitClass == "Carrier":
 		atkAnimSprite.scale = Vector2(3, 3)
 		defAnimSprite.scale = Vector2(-2, 2)
-== == == =
-
-	if attacker.unitClass == "Mech":
-		atkAnimSprite.scale = Vector2(2, 2)
-		defAnimSprite.scale = Vector2(-2, 2)
-	if attacker.unitClass == "Carrier":
-		atkAnimSprite.scale = Vector2(1, 1)
-		defAnimSprite.scale = Vector2(-1, 1)
-	if defender.unitClass == "Mech":
+	if defender.unitClass == "Mech" or defender.unitClass == "EnemyMech" or defender.unitClass == "EnemyTurret":
 		atkAnimSprite.scale = Vector2(2, 2)
 		defAnimSprite.scale = Vector2(-2, 2)
 	if defender.unitClass == "Carrier":
 		atkAnimSprite.scale = Vector2(1, 1)
 		defAnimSprite.scale = Vector2(-1, 1)
->> >> >> > db594ba(Fix for targettingbigunits)
 	atkAnimSprite.play(atkIdle)
 	defAnimSprite.play(defIdle)
 

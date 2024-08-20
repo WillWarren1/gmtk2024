@@ -70,7 +70,7 @@ func _ready() -> void:
 			hurtSprite = "enemyInfantryHurt"
 			idleSprite = "enemyInfantryIdle"
 			shootSprite = "enemyInfantryShoot"
-			
+
 			statsController.stats.weaponRange = 3
 			statsController.stats.meleeRange = 1
 			statsController.stats.weaponDamage = 3
@@ -109,7 +109,7 @@ func _ready() -> void:
 			statsController.stats.attackCounter = 240
 			_shadow_sprite.scale = Vector2(4, 4)
 			_shadow_sprite.position.y = 64
-			
+
 		"EnemyMech":
 			hurtSprite = "enemyMechHurt"
 			idleSprite = "enemyMechIdle"
@@ -165,7 +165,7 @@ func _ready() -> void:
 			shootSound = "res://Audio/SFX/MechShoot.wav"
 			hitSound = "res://Audio/SFX/MechHit.wav"
 			selectSound = "res://Audio/SFX/MechSelect.wav"
-			
+
 			statsController.stats.weaponRange = 13
 			statsController.stats.meleeRange = 0
 			statsController.stats.weaponDamage = 8
