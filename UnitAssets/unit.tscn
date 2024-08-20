@@ -644,8 +644,9 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Unit" type="Path2D"]
+[node name="Unit" type="Path2D" groups=["Unit"]]
 z_index = 1
+scale = Vector2(-1, 1)
 script = ExtResource("1_iqde3")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -655,7 +656,7 @@ libraries = {
 autoplay = "idle"
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
-progress = 5.8523e+06
+progress = 8.43719e+06
 rotates = false
 loop = false
 
