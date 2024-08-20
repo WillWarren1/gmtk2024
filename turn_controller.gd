@@ -148,3 +148,11 @@ func enemy_ai(unit):
 func _on_moveand_atk_pressed() -> void:
 	gameboard._active_unit = null
 	gameboard._select_active_unit(turnArray[currentTurn].cell)
+
+
+func _on_store_pressed():
+	turnArray[currentTurn].store_unit(1) # stores the current unit - the 1 here is placeholder to avoid a crash and does nothing, replace it with the unit we are storing it in
+
+
+func _on_deploy_pressed():
+	pass
