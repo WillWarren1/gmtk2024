@@ -353,7 +353,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e6bdq")
 }],
-"loop": true,
+"loop": false,
 "name": &"carrierShoot",
 "speed": 5.0
 }, {
@@ -655,7 +655,7 @@ libraries = {
 autoplay = "idle"
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
-progress = 8.43719e+06
+progress = 8.67201e+06
 rotates = false
 loop = false
 
@@ -667,7 +667,7 @@ texture = ExtResource("2_cc6p0")
 [node name="UnitSprite" type="AnimatedSprite2D" parent="PathFollow2D"]
 position = Vector2(3, -12)
 sprite_frames = SubResource("SpriteFrames_c0gcu")
-animation = &"enemyTurretIdle"
+animation = &"carrierShoot"
 autoplay = "infantryIdle"
 
 [node name="Stats" type="Node2D" parent="."]
