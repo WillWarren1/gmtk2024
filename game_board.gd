@@ -29,6 +29,8 @@ var _targetable_cells := []
 
 var _unit_base: Array
 
+var _pathfinder: PathFinder
+
 
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
 # dictionary represents a unit. The key is the position in grid coordinates, while the value is a
@@ -95,7 +97,6 @@ func get_targetable_cells(unit: Unit) -> Array:
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
 func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false) -> Array:
-	print("floodfill start", cell)
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
 	var exclusionZone := []
@@ -113,7 +114,6 @@ func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false)
 		# 2. We haven't already visited and filled this cell
 		# 3. We are within the `max_distance`, a number of cells.
 		if not grid.is_within_bounds(current):
-			print("not within bounds", current)
 			continue
 		if current in array:
 			continue
@@ -148,7 +148,6 @@ func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false)
 			# but repeating it here with the neighbors skips some instructions.
 			if is_occupied(coordinates) && _units[coordinates] != _units[cell]:
 				var individualExclusionZone = grid.makeCellSquare(coordinates, _units[cell].size)
-				print("individualExclusionZone", individualExclusionZone)
 				exclusionZone.append_array(individualExclusionZone)
 				if !isForAttacking:
 					continue
@@ -159,10 +158,21 @@ func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false)
 
 			# This is where we extend the stack.
 			stack.append(coordinates)
+
 	if !isForAttacking:
+#		the exclusionZone is a zone of cells that we don't want units to navigate to
+#		removing any cell from an exclusionzone prevents visual issues from larger units occupying the space next to smaller ones.
 		for cellToExclude in exclusionZone:
 			if array.has(cellToExclude):
 				array.erase(cellToExclude)
+#	now run through pathfinding for every cell in array, if theres no valid path to cell, remove it from array.
+	_pathfinder = PathFinder.new(grid, array)
+	for floodCell in array:
+		var floodPath: PackedVector2Array = _pathfinder.calculate_point_path(cell, floodCell)
+		if floodCell == Vector2(26,17):
+			print("floodpath", floodPath)
+		if floodPath.size() == 0:
+			array.erase(floodCell)
 	return array
 
 # Selects the unit in the `cell` if there's one there.
@@ -198,19 +208,20 @@ func _select_target_unit(cell: Vector2) -> void:
 		return
 	if _units[cell].isPlayerControllable == true:
 		return
-	print("Checking AttackRange...")
+
+#	We check the distance from any cell in the base of the target to the active units cell
 	var baseCellDistances = []
-	for baseCell in _active_unit.base:
-		var distanceToBaseCell = floor(baseCell.distance_to(cell))
+	for baseCell in _units[cell].base:
+		var distanceToBaseCell = floor(baseCell.distance_to(_active_unit.cell))
 		baseCellDistances.append(distanceToBaseCell)
-	print("min distance", baseCellDistances.min())
+
 	var distance = floor(baseCellDistances.min())
-	print("distance", distance)
+
 	var weaponRange = _active_unit.statsController.stats.weaponRange
 	var meleeRange = _active_unit.statsController.stats.meleeRange
-	print("weaponRange", weaponRange)
+
 	if distance <= weaponRange && distance > meleeRange:
-		print("within weapon range")
+
 		var combatInstance = combatScene.instantiate()
 		combatInstance.position = get_viewport_rect().size / 2
 		combatInstance.attacker = _active_unit
@@ -274,8 +285,6 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 
 # Selects or moves a unit based on where the cursor is.
 func _on_cursor_accept_pressed(cell: Vector2) -> void:
-	print("click!")
-	print("is walkable?", _walkable_cells.any(func(currentCell): return currentCell == cell))
 	# The cursor's "accept_pressed" means that the player wants to interact with a cell. Depending
 	# on the board's current state, this interaction means either that we want to select a unit all
 	# that we want to give it a move order.
@@ -283,12 +292,16 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	if not _active_unit:
 		_select_active_unit(cell)
 	elif _active_unit.isSelected:
-		print("is_occupied(cell)", is_occupied(cell))
+		print("is_occupied(cell) = ", is_occupied(cell))
 		if is_occupied(cell) && _units[cell] != _active_unit:
 			print('selecting target', _units[cell])
 			_select_target_unit(cell)
 			return
-		_move_active_unit(cell)
+		if _active_unit.cell != cell:
+			print("_active_unit.cell", _active_unit.cell)
+			print("cell", cell)
+			print("CELL IS NOT ACTIVE UNIT")
+			_move_active_unit(cell)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _active_unit and event.is_action_pressed("ui_cancel"):

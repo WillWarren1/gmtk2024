@@ -25,7 +25,7 @@ func draw(cell_start: Vector2, cell_end: Vector2) -> void:
 	# We first clear any tiles on the tilemap, then let the Astar2D (PathFinder) find the
 	# path for us.
 	clear()
-	current_path = _pathfinder.calculate_point_path(cell_start, cell_end, tileMap)
+	current_path = _pathfinder.calculate_point_path(cell_start, cell_end)
 	# And we draw a tile for every cell in the path.
 	set_cells_terrain_connect(0, current_path, 0, 0)
 
