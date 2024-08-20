@@ -48,7 +48,8 @@ func _process(delta: float) -> void:
 			turnStep = 3
 		3:
 			if !turnArray[currentTurn].isPlayerControllable:
-				iterate_turn()
+				#iterate_turn()
+				pass
 			else:
 				if turnArray[currentTurn].isSelected == false:
 					pass
@@ -133,16 +134,21 @@ func enemy_ai(unit):
 	
 	var distance_holder = 100000
 	var target
-	
-	#check if player unit is in range
-
-	#find nearest player unit and move towards them
+	#find nearest player unit
 	for i in playerArmyActive:
 		if unit.global_position.distance_to(i.global_position) < distance_holder:
 			target = i
 			distance_holder = unit.global_position.distance_to(i.global_position)
-		print("My Target is " + str(target))
-	#check if player unit is in range again
+	print("My Target is " + str(target))
+	print("My Target is in cell " + str(target.cell))
+	#check if player unit is in range and attack if so
+	print(unit.cell)
+	gameboard._select_active_unit(unit.cell)
+	gameboard.get_walkable_cells(unit)
+	gameboard._move_active_unit(Vector2(16,28))
+	#otherwise move towards them
+	
+	#check if player unit is in range again and attack if so
 
 
 func _on_moveand_atk_pressed() -> void:

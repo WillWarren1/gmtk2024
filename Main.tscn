@@ -40,7 +40,7 @@ unitClass = "EnemyInfantry"
 activeEnemy = true
 
 [node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(592, 592)
+position = Vector2(912, 880)
 isPlayerControllable = true
 unitClass = "Mech"
 
