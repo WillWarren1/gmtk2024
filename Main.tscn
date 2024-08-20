@@ -1,7 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://uqcm7ckaicr7"]
+[gd_scene load_steps=14 format=3 uid="uid://uqcm7ckaicr7"]
 
 [ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
-[ext_resource type="Script" path="res://main.gd" id="1_dwdtq"]
+[ext_resource type="Script" path="res://Audio/Music/main.gd" id="1_dwdtq"]
 [ext_resource type="Script" path="res://game_board.gd" id="2_o4r1v"]
 [ext_resource type="PackedScene" uid="uid://ixme7eh3gids" path="res://UnitAssets/UnitOverlay/unit_overlay.tscn" id="3_qaid1"]
 [ext_resource type="PackedScene" uid="uid://dp2q81v0cexn7" path="res://UnitAssets/TargetOverlay/target_overlay.tscn" id="3_vuhvl"]
@@ -11,6 +11,10 @@
 [ext_resource type="PackedScene" uid="uid://c7mwedqteqa0g" path="res://CursorAssets/cursor.tscn" id="7_mwcw3"]
 [ext_resource type="AudioStream" uid="uid://llep1d6mwro5" path="res://Audio/Music/Drums.wav" id="8_afvp5"]
 [ext_resource type="PackedScene" uid="uid://d4aqk6xpmnt7g" path="res://turn_controller.tscn" id="9_m2xjo"]
+[ext_resource type="Script" path="res://pause.gd" id="10_hkq1e"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_5fmx2"]
+font_size = 60
 
 [node name="Main" type="Node2D" groups=["Main"]]
 script = ExtResource("1_dwdtq")
@@ -53,7 +57,36 @@ activeEnemy = true
 zoom = Vector2(2, 2)
 script = ExtResource("7_1ow0n")
 
+[node name="Pause" type="Panel" parent="Camera2D"]
+process_mode = 3
+z_index = 20
+texture_filter = 1
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 480.0
+offset_bottom = 270.0
+script = ExtResource("10_hkq1e")
+
+[node name="Label" type="Label" parent="Camera2D/Pause"]
+offset_left = 352.0
+offset_top = 94.0
+offset_right = 604.0
+offset_bottom = 157.0
+text = "PAUSED"
+label_settings = SubResource("LabelSettings_5fmx2")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayButton2" type="Button" parent="Camera2D/Pause"]
+offset_left = 384.0
+offset_top = 334.0
+offset_right = 576.0
+offset_bottom = 398.0
+theme_override_font_sizes/font_size = 36
+text = "SETTINGS"
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
 stream = ExtResource("8_afvp5")
 volume_db = -0.324
 autoplay = true
