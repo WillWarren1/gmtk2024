@@ -32,7 +32,7 @@ func _init(grid: Grid, walkable_cells: Array) -> void:
 
 
 # Returns the path found between `start` and `end` as an array of Vector2 coordinates.
-func calculate_point_path(start: Vector2, end: Vector2, tileMap: TileMap) -> PackedVector2Array:
+func calculate_point_path(start: Vector2, end: Vector2) -> PackedVector2Array:
 	# With the AStar algorithm, we have to use the points' indices to get a path. This is why we
 	# need a reliable way to calculate an index given some input coordinates.
 	# Our Grid.as_index() method does just that.

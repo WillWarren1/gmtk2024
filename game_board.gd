@@ -9,6 +9,7 @@ extends Node2D
 @export var combatScene: PackedScene = preload("res://BattleScene/battle_scene.tscn")
 @onready var _unit_path: UnitPath = $UnitPath
 @onready var _unit_overlay: UnitOverlay = $UnitOverlay
+@onready var _target_overlay: TargetOverlay = $TargetOverlay
 @onready var tileMap: TileMap = $"../TileMap"
 @onready var cursor: Node2D = $Cursor
 
@@ -19,11 +20,16 @@ const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 # `_active_unit` and populate the walkable cells below. This allows us to clear the unit, the
 # overlay, and the interactive path drawing later on when the player decides to deselect it.
 var _active_unit: Unit
+
+var _hovered_unit: Unit
 # This is an array of all the cells the `_active_unit` can move to. We will populate the array when
 # selecting a unit and use it in the `_move_active_unit()` function below.
 var _walkable_cells := []
+var _targetable_cells := []
 
 var _unit_base: Array
+
+var _pathfinder: PathFinder
 
 
 # We use a dictionary to keep track of the units that are on the board. Each key-value pair in the
@@ -42,9 +48,15 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_reinitialize()
 	if _units.has(cursor.cell):
-		cursor.targetSprite.scale = Vector2(_units[cursor.cell].size, _units[cursor.cell].size)
+		_hovered_unit = _units[cursor.cell]
+		cursor.targetSprite.visible = false
+		_hovered_unit.baseHighlighter.visible = true
 	else:
-		cursor.targetSprite.scale = Vector2(1, 1)
+		if !cursor.targetSprite.visible:
+			cursor.targetSprite.visible = true
+		if _hovered_unit && is_instance_valid(_hovered_unit) && _hovered_unit.baseHighlighter.visible:
+			_hovered_unit.baseHighlighter.visible = false
+		_hovered_unit = null
 
 # Returns `true` if the cell is occupied by a unit.
 func is_occupied(cell: Vector2) -> bool:
@@ -73,17 +85,26 @@ func _reinitialize() -> void:
 		for baseCell in unit.base:
 			_units[baseCell] = unit
 
+func removeCellsFromList(excludeList: Array, originList: Array) -> Array:
+	for cellToExclude in excludeList:
+		if originList.has(cellToExclude):
+			originList.erase(cellToExclude)
+	return originList
 
 # Returns an array of cells a given unit can walk using the flood fill algorithm.
 func get_walkable_cells(unit: Unit) -> Array:
-	return _flood_fill(unit.cell, unit.statsController.stats.movementRange)
+	return _flood_fill(unit.cell, unit.statsController.stats.currentMovementRange)
 
+func get_targetable_cells(unit: Unit) -> Array:
+	var range = unit.statsController.stats.currentMovementRange + unit.statsController.stats.weaponRange
+	var isForAttacking = true
+	return _flood_fill(unit.cell, range, isForAttacking)
 
 # Returns an array with all the coordinates of walkable cells based on the `max_distance`.
-func _flood_fill(cell: Vector2, max_distance: int) -> Array:
-	print("floodfill start", cell)
+func _flood_fill(cell: Vector2, max_distance: int, isForAttacking: bool = false) -> Array:
 	# This is the array of walkable cells the algorithm outputs.
 	var array := []
+	var exclusionZone := []
 	# The way we implemented the flood fill here is by using a stack. In that stack, we store every
 	# cell we want to apply the flood fill algorithm to.
 	var stack := [cell]
@@ -98,7 +119,6 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		# 2. We haven't already visited and filled this cell
 		# 3. We are within the `max_distance`, a number of cells.
 		if not grid.is_within_bounds(current):
-			print("not within bounds", current)
 			continue
 		if current in array:
 			continue
@@ -109,9 +129,14 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 		if distance > max_distance:
 			continue
 
-#		Currently only works for small units, make isWalkable dynamic by unit size once we have multiple unit sizes
 		var tileData = tileMap.get_cell_tile_data(0, current)
-		var isWalkable = tileData != null && tileData.get_custom_data("isSmallUnitWalkable")
+		var isWalkable = false
+		if _units[cell].unitClass == "Infantry":
+			isWalkable = tileData != null && tileData.get_custom_data("isSmallUnitWalkable")
+		elif _units[cell].unitClass == "Mech":
+			isWalkable = tileData != null && tileData.get_custom_data("isMedUnitWalkable")
+		elif _units[cell].unitClass == "Carrier":
+			isWalkable = tileData != null && tileData.get_custom_data("isBigUnitWalkable")
 		if !isWalkable:
 			continue
 
@@ -126,13 +151,47 @@ func _flood_fill(cell: Vector2, max_distance: int) -> Array:
 			# This is an "optimization". It does the same thing as our `if current in array:` above
 			# but repeating it here with the neighbors skips some instructions.
 			if is_occupied(coordinates) && _units[coordinates] != _units[cell]:
-				continue
+				var individualExclusionZone = grid.makeCellSquare(coordinates, _units[cell].size)
+				exclusionZone.append_array(individualExclusionZone)
+				if !isForAttacking:
+					continue
+				elif _units[coordinates].isPlayerControllable:
+						continue
+					#var targetDifference: Vector2 = (current - cell).abs()
+					#var distanceFromCell := int(targetDifference.x + targetDifference.y)
+					#print("distanceFromCell", distanceFromCell)
+					#if distanceFromCell > _active_unit.statsController.stats.currentMovementRange:
+						#print("YIPPEE")
+						##exclusionZone.append(coordinates)
+						#continue
 			if coordinates in array:
 				continue
 
 			# This is where we extend the stack.
 			stack.append(coordinates)
-	return array
+
+	if !isForAttacking:
+#		the exclusionZone is a zone of cells that we don't want units to navigate to
+#		removing any cell from an exclusionzone prevents visual issues from larger units occupying the space next to smaller ones.
+		print("removing cells...")
+		array = removeCellsFromList(exclusionZone, array)
+		print("removing cells...")
+
+
+#	now run through pathfinding for every cell in array, if theres no valid path to cell, remove it from array.
+	_pathfinder = PathFinder.new(grid, array)
+	var finalFilterList := []
+	for floodCell in array:
+		var floodPath: PackedVector2Array = _pathfinder.calculate_point_path(cell, floodCell)
+		#if !isForAttacking:
+			#var semiFinalFilterList := []
+			#for poop in floodPath:
+				#if exclusionZone.has(poop):
+					#semiFinalFilterList.append(poop)
+			#array = array.filter(func(cell): return !finalFilterList.has(cell))
+		if floodPath.size() == 0:
+			finalFilterList.append(floodCell)
+	return array.filter(func(potentiallyYuckyTile): return !finalFilterList.has(potentiallyYuckyTile))
 
 # Selects the unit in the `cell` if there's one there.
 # Sets it as the `_active_unit` and draws its walkable cells and interactive move path.
@@ -155,6 +214,8 @@ func _select_active_unit(cell: Vector2) -> void:
 		_active_unit.isSelected = true
 		_walkable_cells = get_walkable_cells(_active_unit)
 		_unit_overlay.draw(_walkable_cells)
+		_targetable_cells = get_targetable_cells(_active_unit)
+		_target_overlay.draw(_targetable_cells)
 		var _pathable_cells = get_walkable_cells(_active_unit)
 		_unit_path.initialize(_pathable_cells)
 
@@ -165,14 +226,20 @@ func _select_target_unit(cell: Vector2) -> void:
 		return
 	if _units[cell].isPlayerControllable == true:
 		return
-	print("Checking AttackRange...")
-	var distance = floor(_active_unit.cell.distance_to(cell))
-	print("distance", distance)
+
+#	We check the distance from any cell in the base of the target to the active units cell
+	var baseCellDistances = []
+	for baseCell in _units[cell].base:
+		var distanceToBaseCell = floor(baseCell.distance_to(_active_unit.cell))
+		baseCellDistances.append(distanceToBaseCell)
+
+	var distance = floor(baseCellDistances.min())
+
 	var weaponRange = _active_unit.statsController.stats.weaponRange
 	var meleeRange = _active_unit.statsController.stats.meleeRange
-	print("weaponRange", weaponRange)
+
 	if distance <= weaponRange && distance > meleeRange:
-		print("within weapon range")
+
 		var combatInstance = combatScene.instantiate()
 		combatInstance.position = get_viewport_rect().size / 2
 		combatInstance.attacker = _active_unit
@@ -195,6 +262,7 @@ func _select_target_unit(cell: Vector2) -> void:
 func _deselect_active_unit() -> void:
 	_active_unit.isSelected = false
 	_unit_overlay.clear()
+	_target_overlay.clear()
 	_unit_path.stop()
 
 
@@ -235,8 +303,6 @@ func _on_cursor_moved(new_cell: Vector2) -> void:
 
 # Selects or moves a unit based on where the cursor is.
 func _on_cursor_accept_pressed(cell: Vector2) -> void:
-	print("click!")
-	print("is walkable?", _walkable_cells.any(func(currentCell): return currentCell == cell))
 	# The cursor's "accept_pressed" means that the player wants to interact with a cell. Depending
 	# on the board's current state, this interaction means either that we want to select a unit all
 	# that we want to give it a move order.
@@ -244,12 +310,22 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	if not _active_unit:
 		_select_active_unit(cell)
 	elif _active_unit.isSelected:
+		print("is_occupied(cell) = ", is_occupied(cell))
 		if is_occupied(cell) && _units[cell] != _active_unit:
+			print('selecting target', _units[cell])
 			_select_target_unit(cell)
 			return
-		_move_active_unit(cell)
+		if _active_unit.cell != cell:
+			print("_active_unit.cell", _active_unit.cell)
+			print("cell", cell)
+			print("CELL IS NOT ACTIVE UNIT")
+			_move_active_unit(cell)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _active_unit and event.is_action_pressed("ui_cancel"):
 		_deselect_active_unit()
 		_clear_active_unit()
+
+
+func _on_unit_base_updated():
+	_reinitialize()

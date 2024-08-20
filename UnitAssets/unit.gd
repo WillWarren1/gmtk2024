@@ -1,4 +1,3 @@
-@tool
 class_name Unit
 extends Path2D
 
@@ -9,7 +8,7 @@ signal walk_finished
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
 @export var isPlayerControllable := false
 
-var size:= 1
+var size := 1
 
 @export var unitClass: String = "Infantry"
 var hurtSprite: String = "infantryHurt"
@@ -29,14 +28,17 @@ var isWalking := false: set = _set_is_walking
 
 @onready var _sprite: AnimatedSprite2D = $PathFollow2D/UnitSprite
 @onready var _shadow_sprite: Sprite2D = $PathFollow2D/ShadowSprite
+@onready var baseHighlighter: Sprite2D = $PathFollow2D/BaseHighlighter
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
 @onready var _path_follow: PathFollow2D = $PathFollow2D
+@onready var unitPath: TileMap = $"../UnitPath"
 @onready var statsController: Node2D = $Stats
 @onready var hurtTimer = $Timer
 @onready var shootTimer = $Timer2
 @onready var audioMove = $AudioMove
 @onready var audioSelect = $AudioSelect
 
+const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 #func _draw() -> void:
 	#draw_rect(base, Color.ALICE_BLUE, false, 1.0)
 
@@ -49,13 +51,14 @@ func _ready() -> void:
 			hurtSprite = "infantryHurt"
 			idleSprite = "infantryIdle"
 			shootSprite = "infantryShoot"
-			
+
 			statsController.stats.weaponRange = 3
 			statsController.stats.meleeRange = 1
 			statsController.stats.weaponDamage = 3
 			statsController.stats.meleeDamage = 1
-			statsController.stats.movementRange = 6
-			statsController.stats.speed = 600.0
+			statsController.stats.maxMovementRange = 6
+			statsController.stats.currentMovementRange = 6
+			statsController.stats.speed = 400.0
 			statsController.stats.maxHealth = 10
 			statsController.stats.currentHealth = 10
 			size = 1
@@ -67,7 +70,7 @@ func _ready() -> void:
 			hurtSprite = "enemyInfantryHurt"
 			idleSprite = "enemyInfantryIdle"
 			shootSprite = "enemyInfantryShoot"
-			
+
 			statsController.stats.weaponRange = 3
 			statsController.stats.meleeRange = 1
 			statsController.stats.weaponDamage = 3
@@ -89,12 +92,13 @@ func _ready() -> void:
 			shootSound = "res://Audio/SFX/MechShoot.wav"
 			hitSound = "res://Audio/SFX/MechHit.wav"
 			selectSound = "res://Audio/SFX/MechSelect.wav"
-			
+
 			statsController.stats.weaponRange = 8
 			statsController.stats.meleeRange = 3
 			statsController.stats.weaponDamage = 8
 			statsController.stats.meleeDamage = 3
-			statsController.stats.movementRange = 10
+			statsController.stats.maxMovementRange = 10
+			statsController.stats.currentMovementRange = 10
 			statsController.stats.speed = 500.0
 			statsController.stats.maxHealth = 30
 			statsController.stats.currentHealth = 30
@@ -103,9 +107,9 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
 			statsController.stats.attackCounter = 240
-			_shadow_sprite.scale = Vector2(4,4)
+			_shadow_sprite.scale = Vector2(4, 4)
 			_shadow_sprite.position.y = 64
-			
+
 		"EnemyMech":
 			hurtSprite = "enemyMechHurt"
 			idleSprite = "enemyMechIdle"
@@ -114,13 +118,13 @@ func _ready() -> void:
 			shootSound = "res://Audio/SFX/MechShoot.wav"
 			hitSound = "res://Audio/SFX/MechHit.wav"
 			selectSound = "res://Audio/SFX/MechSelect.wav"
-			
 			statsController.stats.weaponRange = 8
 			statsController.stats.meleeRange = 3
 			statsController.stats.weaponDamage = 8
 			statsController.stats.meleeDamage = 3
-			statsController.stats.movementRange = 10
-			statsController.stats.speed = 500.0
+			statsController.stats.maxMovementRange = 10
+			statsController.stats.currentMovementRange = 10
+			statsController.stats.speed = 250.0
 			statsController.stats.maxHealth = 30
 			statsController.stats.currentHealth = 30
 			size = 5
@@ -128,7 +132,7 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
 			statsController.stats.attackCounter = 240
-			_shadow_sprite.scale = Vector2(4,4)
+			_shadow_sprite.scale = Vector2(4, 4)
 			_shadow_sprite.position.y = 64
 		"Carrier":
 			hurtSprite = "carrierHurt"
@@ -138,13 +142,13 @@ func _ready() -> void:
 			shootSound = "res://Audio/SFX/CarrierShoot.wav"
 			hitSound = "res://Audio/SFX/CarrierHit.wav"
 			selectSound = "res://Audio/SFX/CarrierSelect.wav"
-			
 			statsController.stats.weaponRange = 10
 			statsController.stats.meleeRange = 0
 			statsController.stats.weaponDamage = 4
 			statsController.stats.meleeDamage = 0
-			statsController.stats.movementRange = 14
-			statsController.stats.speed = 400.0
+			statsController.stats.maxMovementRange = 14
+			statsController.stats.currentMovementRange = 14
+			statsController.stats.speed = 200.0
 			statsController.stats.maxHealth = 50
 			statsController.stats.currentHealth = 50
 			size = 13
@@ -161,7 +165,7 @@ func _ready() -> void:
 			shootSound = "res://Audio/SFX/MechShoot.wav"
 			hitSound = "res://Audio/SFX/MechHit.wav"
 			selectSound = "res://Audio/SFX/MechSelect.wav"
-			
+
 			statsController.stats.weaponRange = 13
 			statsController.stats.meleeRange = 0
 			statsController.stats.weaponDamage = 8
@@ -177,35 +181,33 @@ func _ready() -> void:
 			statsController.stats.attackCounter = 240
 
 
-
 	print(grid.calculate_grid_coordinates(position))
 	self.cell = grid.calculate_grid_coordinates(position)
 	#print('ready cell', cell)
 	position = grid.calculate_map_position(cell)
+	baseHighlighter.scale = Vector2(size, size)
 	base = grid.makeCellSquare(cell, size)
 	#print("base", base)
 
 	if not Engine.is_editor_hint():
 		curve = Curve2D.new()
-	
+
 	_sprite.play(idleSprite)
 	audioMove.stream = load(walkSound)
 	audioSelect.stream = load(selectSound)
 
 
-
 func _process(delta: float) -> void:
 	_path_follow.progress += statsController.stats.speed * delta
 	base = grid.makeCellSquare(cell, size)
-
 	if _path_follow.progress_ratio >= 1.0:
+		statsController.stats.currentMovementRange -= (unitPath.current_path.size() - 1)
 		self.isWalking = false
 		_path_follow.progress = 0.0
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
 		emit_signal("walk_finished")
 		audioMove.stop()
-	
 
 
 func walk_along(path: PackedVector2Array) -> void:
@@ -219,7 +221,6 @@ func walk_along(path: PackedVector2Array) -> void:
 	cell = path[-1]
 	self.isWalking = true
 	audioMove.play()
-	
 
 
 func set_cell(value: Vector2) -> void:

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dd7gxvna3x6hb"
-path="res://.godot/imported/unit_shadow.bmp-f0e905721745bdc1350dd28e65765511.ctex"
+uid="uid://dp0qpajouugbr"
+path="res://.godot/imported/tileset_unit_overlay.svg-a775bfff966ff81f25f7b6f71ac08e0e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UnitAssets/unit_shadow.bmp"
-dest_files=["res://.godot/imported/unit_shadow.bmp-f0e905721745bdc1350dd28e65765511.ctex"]
+source_file="res://UnitAssets/TargetOverlay/tileset_unit_overlay.svg"
+dest_files=["res://.godot/imported/tileset_unit_overlay.svg-a775bfff966ff81f25f7b6f71ac08e0e.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false
