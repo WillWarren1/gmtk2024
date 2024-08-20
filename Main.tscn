@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://uqcm7ckaicr7"]
+[gd_scene load_steps=11 format=3 uid="uid://uqcm7ckaicr7"]
 
 [ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
+[ext_resource type="Script" path="res://main.gd" id="1_dwdtq"]
 [ext_resource type="Script" path="res://game_board.gd" id="2_o4r1v"]
 [ext_resource type="PackedScene" uid="uid://ixme7eh3gids" path="res://UnitAssets/UnitOverlay/unit_overlay.tscn" id="3_qaid1"]
 [ext_resource type="PackedScene" uid="uid://ukn87x0yagba" path="res://Pathfinder/unit_path.tscn" id="4_4j1ps"]
@@ -8,13 +9,15 @@
 [ext_resource type="Script" path="res://camera.gd" id="7_1ow0n"]
 [ext_resource type="PackedScene" uid="uid://c7mwedqteqa0g" path="res://CursorAssets/cursor.tscn" id="7_mwcw3"]
 [ext_resource type="AudioStream" uid="uid://llep1d6mwro5" path="res://Audio/Music/Drums.wav" id="8_afvp5"]
+[ext_resource type="PackedScene" uid="uid://cl1xo7wh3oled" path="res://turn_controller.tscn" id="9_m2xjo"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" groups=["Main"]]
+script = ExtResource("1_dwdtq")
 
 [node name="TileMap" parent="." instance=ExtResource("1_4ugnn")]
 scale = Vector2(1, 1)
 
-[node name="GameBoard" type="Node2D" parent="."]
+[node name="GameBoard" type="Node2D" parent="." groups=["Gameboard"]]
 y_sort_enabled = true
 script = ExtResource("2_o4r1v")
 
@@ -24,6 +27,7 @@ script = ExtResource("2_o4r1v")
 
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(592, 520)
+scale = Vector2(1, 1)
 isPlayerControllable = true
 unitClass = "Carrier"
 
@@ -32,17 +36,17 @@ position = Vector2(16, 16)
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(976, 560)
-scale = Vector2(-1, 1)
 unitClass = "EnemyInfantry"
+activeEnemy = true
 
 [node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(848, 648)
+scale = Vector2(1, 1)
 isPlayerControllable = true
 unitClass = "Mech"
 
 [node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
 position = Vector2(1168, 624)
-scale = Vector2(-1, 1)
 unitClass = "EnemyTurret"
 
 [node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
@@ -53,6 +57,9 @@ script = ExtResource("7_1ow0n")
 stream = ExtResource("8_afvp5")
 volume_db = -0.324
 autoplay = true
+
+[node name="TurnController" parent="." instance=ExtResource("9_m2xjo")]
+position = Vector2(677, 362)
 
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]

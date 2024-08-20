@@ -8,6 +8,7 @@ signal walk_finished
 #@export var skin: Texture: set = set_skin
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
 @export var isPlayerControllable := false
+@export var isStored := false
 
 var size:= 1
 
@@ -26,6 +27,7 @@ var isSelected := false: set = set_is_selected
 
 var isWalking := false: set = _set_is_walking
 
+@export var activeEnemy = false
 
 @onready var _sprite: AnimatedSprite2D = $PathFollow2D/UnitSprite
 @onready var _shadow_sprite: Sprite2D = $PathFollow2D/ShadowSprite
@@ -44,6 +46,8 @@ var isWalking := false: set = _set_is_walking
 func _ready() -> void:
 	if isPlayerControllable == false:
 		scale.x = -1
+	else:
+		scale.x = 1
 	match unitClass:
 		"Infantry":
 			hurtSprite = "infantryHurt"
@@ -139,7 +143,7 @@ func _ready() -> void:
 			hitSound = "res://Audio/SFX/CarrierHit.wav"
 			selectSound = "res://Audio/SFX/CarrierSelect.wav"
 			
-			statsController.stats.weaponRange = 10
+			statsController.stats.weaponRange = 14
 			statsController.stats.meleeRange = 0
 			statsController.stats.weaponDamage = 4
 			statsController.stats.meleeDamage = 0
@@ -271,3 +275,15 @@ func hurt_finished():
 
 func attack_finished() -> void:
 	_sprite.play(idleSprite)
+
+func store_unit(container):
+	isStored = true
+	position = Vector2(-1000,-1000)
+	print(str(self) + " Stored!")
+	#add unit to it's container's inventory
+
+func deploy_unit(target_position):
+	isStored = false
+	position = target_position
+	print(str(self) + " Deployed at " + str(target_position))
+	#remove unit from it's container's inventory
