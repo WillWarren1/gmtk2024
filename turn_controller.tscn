@@ -23,7 +23,7 @@ text = "END TURN
 
 [node name="Deploy" type="Button" parent="TurnUI"]
 layout_mode = 0
-offset_left = 32.0
+offset_left = 40.0
 offset_top = 168.0
 offset_right = 152.0
 offset_bottom = 216.0
@@ -31,7 +31,7 @@ theme_override_font_sizes/font_size = 14
 text = "DEPLOY"
 
 [node name="Store" type="Button" parent="TurnUI"]
-offset_left = 32.0
+offset_left = 40.0
 offset_top = 96.0
 offset_right = 152.0
 offset_bottom = 144.0
@@ -39,13 +39,22 @@ theme_override_font_sizes/font_size = 14
 text = "STORE"
 
 [node name="MoveandAtk" type="Button" parent="TurnUI"]
-offset_left = 32.0
+offset_left = 40.0
 offset_top = 24.0
 offset_right = 152.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 14
 text = "MOVE/ATTACK
 "
+
+[node name="Label" type="Label" parent="TurnUI"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -24.0
+offset_right = 200.0
+offset_bottom = -1.0
+text = "_'s Turn"
+horizontal_alignment = 1
 
 [connection signal="pressed" from="TurnUI/EndTurn" to="." method="_on_end_turn_pressed"]
 [connection signal="pressed" from="TurnUI/MoveandAtk" to="." method="_on_moveand_atk_pressed"]

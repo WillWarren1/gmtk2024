@@ -608,7 +608,7 @@ animations = [{
 [sub_resource type="LabelSettings" id="LabelSettings_pk2s1"]
 font_size = 32
 
-[node name="BattleScene" type="Control"]
+[node name="BattleScene" type="Control" groups=["BattleScene"]]
 z_index = 10
 layout_mode = 3
 anchors_preset = 0
