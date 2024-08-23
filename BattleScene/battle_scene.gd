@@ -14,8 +14,6 @@ var camera
 @onready var atkAudio = $AttackerPane/AttackAudio
 @onready var defAudio = $DefenderPane/DefendAudio
 
-var turnController
-
 var attacker: Unit = null
 var defender: Unit = null
 
@@ -46,8 +44,6 @@ var atkAudioPlaying = false
 var defAudioPlaying = false
 
 func _ready():
-	turnController = get_tree().get_first_node_in_group("TurnController")
-	
 	atkIdle = attacker.idleSprite
 	atkShoot = attacker.shootSprite
 	atkHurt = attacker.hurtSprite
@@ -183,7 +179,6 @@ func _process(delta):
 				step = 11
 				counter = 36
 		11:
-			turnController.iterate_turn()
 			queue_free()
 			pass
 
