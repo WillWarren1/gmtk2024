@@ -26,33 +26,33 @@ script = ExtResource("2_o4r1v")
 [node name="UnitPath" parent="GameBoard" instance=ExtResource("4_4j1ps")]
 
 [node name="Unit" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(592, 520)
+position = Vector2(746, 585)
 isPlayerControllable = true
-unitClass = "Mech"
 
 [node name="Cursor" parent="GameBoard" instance=ExtResource("7_mwcw3")]
 
 [node name="Unit2" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(976, 560)
+position = Vector2(890, 583)
 scale = Vector2(-1, 1)
-unitClass = "EnemyInfantry"
+unitClass = 4
 
 [node name="Unit3" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(765, 496)
+position = Vector2(810, 453)
 isPlayerControllable = true
+unitClass = 1
 
 [node name="Unit4" parent="GameBoard" instance=ExtResource("5_xtiok")]
-position = Vector2(805, 658)
+position = Vector2(758, 665)
 scale = Vector2(-1, 1)
-unitClass = "EnemyTurret"
+unitClass = 3
 
-[node name="Camera2D" type="Camera2D" parent="." groups=["Camera"]]
+[node name="Camera" type="Camera2D" parent="." groups=["Camera"]]
 zoom = Vector2(2, 2)
 script = ExtResource("7_1ow0n")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_afvp5")
-volume_db = -0.324
+volume_db = -11.32
 autoplay = true
 
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]

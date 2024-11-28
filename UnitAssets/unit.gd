@@ -2,6 +2,7 @@ class_name Unit
 extends Path2D
 
 signal walk_finished
+signal turn_finished
 
 @export var grid: Resource = preload("res://Grid.tres")
 #@export var skin: Texture: set = set_skin
@@ -9,8 +10,15 @@ signal walk_finished
 @export var isPlayerControllable := false
 
 var size := 1
-
-@export var unitClass: String = "Infantry"
+enum _UnitClass {
+	INFANTRY,
+	MECH,
+	CARRIER,
+	ENEMYINFANTRY,
+	ENEMYMECH,
+	ENEMYTURRET
+}
+@export var unitClass = Global.UnitClass.INFANTRY
 var hurtSprite: String = "infantryHurt"
 var idleSprite: String = "infantryIdle"
 var shootSprite: String = "infantryShoot"
@@ -24,6 +32,7 @@ var base: Array
 var isSelected := false: set = set_is_selected
 
 var isWalking := false: set = _set_is_walking
+var hasActed := false
 
 
 @onready var _sprite: AnimatedSprite2D = $PathFollow2D/UnitSprite
@@ -47,7 +56,7 @@ func _ready() -> void:
 	if isPlayerControllable == false:
 		scale.x = -1
 	match unitClass:
-		"Infantry":
+		_UnitClass.INFANTRY:
 			hurtSprite = "infantryHurt"
 			idleSprite = "infantryIdle"
 			shootSprite = "infantryShoot"
@@ -66,7 +75,7 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 6
 			statsController.stats.defense = 2
 			statsController.stats.attackCounter = 40
-		"EnemyInfantry":
+		_UnitClass.ENEMYINFANTRY:
 			hurtSprite = "enemyInfantryHurt"
 			idleSprite = "enemyInfantryIdle"
 			shootSprite = "enemyInfantryShoot"
@@ -76,6 +85,7 @@ func _ready() -> void:
 			statsController.stats.weaponDamage = 3
 			statsController.stats.meleeDamage = 1
 			statsController.stats.movementRange = 6
+			statsController.stats.currentMovementRange = 6
 			statsController.stats.speed = 600.0
 			statsController.stats.maxHealth = 10
 			statsController.stats.currentHealth = 10
@@ -84,7 +94,7 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 6
 			statsController.stats.defense = 2
 			statsController.stats.attackCounter = 40
-		"Mech":
+		_UnitClass.MECH:
 			hurtSprite = "mechHurt"
 			idleSprite = "mechIdle"
 			shootSprite = "mechShoot"
@@ -110,7 +120,7 @@ func _ready() -> void:
 			_shadow_sprite.scale = Vector2(4, 4)
 			_shadow_sprite.position.y = 64
 
-		"EnemyMech":
+		_UnitClass.ENEMYMECH:
 			hurtSprite = "enemyMechHurt"
 			idleSprite = "enemyMechIdle"
 			shootSprite = "enemyMechShoot"
@@ -134,7 +144,7 @@ func _ready() -> void:
 			statsController.stats.attackCounter = 240
 			_shadow_sprite.scale = Vector2(4, 4)
 			_shadow_sprite.position.y = 64
-		"Carrier":
+		_UnitClass.CARRIER:
 			hurtSprite = "carrierHurt"
 			idleSprite = "carrierIdle"
 			shootSprite = "carrierShoot"
@@ -142,7 +152,7 @@ func _ready() -> void:
 			shootSound = "res://Audio/SFX/CarrierShoot.wav"
 			hitSound = "res://Audio/SFX/CarrierHit.wav"
 			selectSound = "res://Audio/SFX/CarrierSelect.wav"
-			statsController.stats.weaponRange = 10
+			statsController.stats.weaponRange = 12
 			statsController.stats.meleeRange = 0
 			statsController.stats.weaponDamage = 4
 			statsController.stats.meleeDamage = 0
@@ -156,7 +166,9 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 24
 			statsController.stats.defense = 4
 			statsController.stats.attackCounter = 40
-		"EnemyTurret":
+			_shadow_sprite.scale = Vector2(1, 1)
+			_shadow_sprite.position.y = 64
+		_UnitClass.ENEMYTURRET:
 			_sprite.position.y = -32
 			hurtSprite = "enemyTurretHurt"
 			idleSprite = "enemyTurretIdle"
@@ -171,6 +183,7 @@ func _ready() -> void:
 			statsController.stats.weaponDamage = 8
 			statsController.stats.meleeDamage = 0
 			statsController.stats.movementRange = 0
+			statsController.stats.currentMovementRange = 0
 			statsController.stats.speed = 0.0
 			statsController.stats.maxHealth = 30
 			statsController.stats.currentHealth = 30
@@ -179,6 +192,8 @@ func _ready() -> void:
 			statsController.stats.maxAmmo = 12
 			statsController.stats.defense = 3
 			statsController.stats.attackCounter = 240
+			_shadow_sprite.scale = Vector2(1, 1)
+			_shadow_sprite.position.y = 64
 
 
 	print(grid.calculate_grid_coordinates(position))
@@ -208,6 +223,9 @@ func _process(delta: float) -> void:
 		curve.clear_points()
 		emit_signal("walk_finished")
 		audioMove.stop()
+		if hasActed:
+			print("TURN FINISHED")
+			emit_signal("turn_finished")
 
 
 func walk_along(path: PackedVector2Array) -> void:
@@ -272,3 +290,6 @@ func hurt_finished():
 
 func attack_finished() -> void:
 	_sprite.play(idleSprite)
+	hasActed = true
+
+#TODO: add disable state, reset hasActed and currentMovement and all that so units can be disabled when they've already acted

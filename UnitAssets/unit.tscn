@@ -322,7 +322,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"carrierHurt",
-"speed": 5.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -333,7 +333,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"carrierIdle",
-"speed": 5.0
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -356,7 +356,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"carrierShoot",
-"speed": 5.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -379,7 +379,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"enemyInfantryHurt",
-"speed": 5.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -430,7 +430,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"enemyMechHurt",
-"speed": 5.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -487,7 +487,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"enemyTurretHurt",
-"speed": 5.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -518,7 +518,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"enemyTurretShoot",
-"speed": 5.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -541,7 +541,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"infantryHurt",
-"speed": 10.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -584,7 +584,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"infantryShoot",
-"speed": 5.0
+"speed": 24.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -641,7 +641,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"mechShoot",
-"speed": 5.0
+"speed": 24.0
 }]
 
 [node name="Unit" type="Path2D"]
@@ -671,7 +671,7 @@ texture = ExtResource("2_cc6p0")
 [node name="UnitSprite" type="AnimatedSprite2D" parent="PathFollow2D"]
 position = Vector2(3, -12)
 sprite_frames = SubResource("SpriteFrames_c0gcu")
-animation = &"enemyTurretIdle"
+animation = &"carrierIdle"
 autoplay = "infantryIdle"
 
 [node name="Stats" type="Node2D" parent="."]
@@ -689,6 +689,7 @@ volume_db = -20.0
 
 [node name="AudioSelect" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("11_vyclb")
+volume_db = -8.223
 
 [connection signal="timeout" from="Timer" to="." method="hurt_finished"]
 [connection signal="timeout" from="Timer2" to="." method="attack_finished"]

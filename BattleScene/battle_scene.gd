@@ -70,16 +70,16 @@ func _ready():
 	defHpCurr = defender.statsController.stats.currentHealth
 	defAudio.stream = load(attacker.hitSound)
 	camera = get_tree().get_first_node_in_group("Camera")
-	if attacker.unitClass == "Mech" or attacker.unitClass == "EnemyMech" or attacker.unitClass == "EnemyTurret":
+	if attacker.unitClass == attacker._UnitClass.MECH or attacker.unitClass == attacker._UnitClass.ENEMYMECH or attacker.unitClass == attacker._UnitClass.ENEMYTURRET:
 		atkAnimSprite.scale = Vector2(2, 2)
 		defAnimSprite.scale = Vector2(-2, 2)
-	if attacker.unitClass == "Carrier":
+	if attacker.unitClass == attacker._UnitClass.CARRIER:
 		atkAnimSprite.scale = Vector2(3, 3)
 		defAnimSprite.scale = Vector2(-2, 2)
-	if defender.unitClass == "Mech" or defender.unitClass == "EnemyMech" or defender.unitClass == "EnemyTurret":
+	if defender.unitClass == attacker._UnitClass.MECH or defender.unitClass == attacker._UnitClass.ENEMYMECH or defender.unitClass == attacker._UnitClass.ENEMYTURRET:
 		atkAnimSprite.scale = Vector2(2, 2)
 		defAnimSprite.scale = Vector2(-2, 2)
-	if defender.unitClass == "Carrier":
+	if defender.unitClass == attacker._UnitClass.CARRIER:
 		atkAnimSprite.scale = Vector2(1, 1)
 		defAnimSprite.scale = Vector2(-1, 1)
 	atkAnimSprite.play(atkIdle)
@@ -118,6 +118,8 @@ func _process(delta):
 			await get_tree().create_timer(.5).timeout
 			step = 2
 		2:
+			# if !is_instance_valid(defender):
+			# 	pass
 			atkAnimSprite.play(atkShoot)
 			attacker.attack()
 			readoutPanel.text = "ATTACKER ATTACKS"
@@ -125,6 +127,7 @@ func _process(delta):
 		3:
 			await get_tree().create_timer(.5).timeout
 			if not atkAudioPlaying:
+				atkAudio.set_pitch_scale(1.5)
 				atkAudio.play()
 				print("Playing")
 				atkAudioPlaying = true

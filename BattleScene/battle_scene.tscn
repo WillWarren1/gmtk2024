@@ -675,6 +675,7 @@ text = "-MAX"
 label_settings = ExtResource("2_m3j3s")
 
 [node name="AttackAudio" type="AudioStreamPlayer2D" parent="AttackerPane"]
+volume_db = -8.707
 
 [node name="DefenderPane" type="Node2D" parent="."]
 
@@ -735,6 +736,7 @@ text = "-MAX"
 label_settings = ExtResource("2_m3j3s")
 
 [node name="DefendAudio" type="AudioStreamPlayer2D" parent="DefenderPane"]
+volume_db = -10.158
 
 [node name="BattleMessage" type="Label" parent="."]
 layout_mode = 0
