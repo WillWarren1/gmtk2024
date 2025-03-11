@@ -64,7 +64,6 @@ func _on_unit_turn_finished():
 	print("unitsUsed ", unitsUsed)
 	print("number of units 0", numberOfUnits)
 	addUnitsUsed(1)
-#	todo: CHANGE NUMBER OF UNITS TO NUMBER OF CURRENT COMMANDER UNITS <--- this does not exist yet, will require set up
 	if unitsUsed >= numberOfUnits:
 		print('unitsUsed', unitsUsed)
 		print('numberOfUnits', numberOfUnits)
