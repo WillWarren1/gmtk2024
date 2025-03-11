@@ -14,6 +14,8 @@ signal accept_pressed(cell)
 # Emitted when the cursor moved to a new cell.
 signal moved(new_cell)
 
+signal skip_turn()
+
 # Grid resource, giving the node access to the grid size, and more.
 @export var grid: Resource = preload("res://Grid.tres")
 # Time before the cursor can move again in seconds.
@@ -50,6 +52,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		print("cell clicked", cell)
 		emit_signal("accept_pressed", cell)
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_text_backspace"):
+		print("debug skip turn")
+		emit_signal("skip_turn")
 
 	# The code below is for the cursor's movement.
 	# The following lines make some preliminary checks to see whether the cursor should move or not

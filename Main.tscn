@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://uqcm7ckaicr7"]
+[gd_scene load_steps=11 format=3 uid="uid://uqcm7ckaicr7"]
 
 [ext_resource type="PackedScene" uid="uid://dwtk8uqh6abw8" path="res://LevelTileMap/level_tilemap.tscn" id="1_4ugnn"]
+[ext_resource type="PackedScene" uid="uid://q0ormhh5wdsw" path="res://TurnTracker/turn_tracker.tscn" id="1_21o63"]
 [ext_resource type="Script" path="res://game_board.gd" id="2_o4r1v"]
 [ext_resource type="PackedScene" uid="uid://ixme7eh3gids" path="res://UnitAssets/UnitOverlay/unit_overlay.tscn" id="3_qaid1"]
 [ext_resource type="PackedScene" uid="uid://dp2q81v0cexn7" path="res://UnitAssets/TargetOverlay/target_overlay.tscn" id="3_vuhvl"]
@@ -11,6 +12,8 @@
 [ext_resource type="AudioStream" uid="uid://llep1d6mwro5" path="res://Audio/Music/Drums.wav" id="8_afvp5"]
 
 [node name="Main" type="Node2D"]
+
+[node name="TurnTracker" parent="." instance=ExtResource("1_21o63")]
 
 [node name="TileMap" parent="." instance=ExtResource("1_4ugnn")]
 scale = Vector2(1, 1)
@@ -55,5 +58,14 @@ stream = ExtResource("8_afvp5")
 volume_db = -11.32
 autoplay = true
 
+[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit" method="_on_turn_tracker_new_round"]
+[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit2" method="_on_turn_tracker_new_round"]
+[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit3" method="_on_turn_tracker_new_round"]
+[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit4" method="_on_turn_tracker_new_round"]
+[connection signal="turn_finished" from="GameBoard/Unit" to="TurnTracker" method="_on_unit_turn_finished"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
+[connection signal="skip_turn" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_skip_turn"]
+[connection signal="turn_finished" from="GameBoard/Unit2" to="TurnTracker" method="_on_unit_turn_finished"]
+[connection signal="turn_finished" from="GameBoard/Unit3" to="TurnTracker" method="_on_unit_turn_finished"]
+[connection signal="turn_finished" from="GameBoard/Unit4" to="TurnTracker" method="_on_unit_turn_finished"]
