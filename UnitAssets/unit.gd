@@ -8,6 +8,8 @@ signal turn_finished
 #@export var skin: Texture: set = set_skin
 @export var skinOffset := Vector2.ZERO: set = set_skin_offset
 @export var isPlayerControllable := false
+@export var actionPoints := 3
+var commander: Global.turnTakers
 
 var size := 1
 enum _UnitClass {
@@ -33,6 +35,8 @@ var isSelected := false: set = set_is_selected
 
 var isWalking := false: set = _set_is_walking
 var hasActed := false
+var takingTurn := false
+var disabled := false
 
 
 @onready var _sprite: AnimatedSprite2D = $PathFollow2D/UnitSprite
@@ -46,6 +50,7 @@ var hasActed := false
 @onready var shootTimer = $Timer2
 @onready var audioMove = $AudioMove
 @onready var audioSelect = $AudioSelect
+@onready var turnTracker = $"../../TurnTracker"
 
 const DIRECTIONS = [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
 #func _draw() -> void:
@@ -57,6 +62,7 @@ func _ready() -> void:
 		scale.x = -1
 	match unitClass:
 		_UnitClass.INFANTRY:
+			commander = Global.turnTakers.PLAYER
 			hurtSprite = "infantryHurt"
 			idleSprite = "infantryIdle"
 			shootSprite = "infantryShoot"
@@ -76,6 +82,7 @@ func _ready() -> void:
 			statsController.stats.defense = 2
 			statsController.stats.attackCounter = 40
 		_UnitClass.ENEMYINFANTRY:
+			commander = Global.turnTakers.ENEMY
 			hurtSprite = "enemyInfantryHurt"
 			idleSprite = "enemyInfantryIdle"
 			shootSprite = "enemyInfantryShoot"
@@ -95,6 +102,7 @@ func _ready() -> void:
 			statsController.stats.defense = 2
 			statsController.stats.attackCounter = 40
 		_UnitClass.MECH:
+			commander = Global.turnTakers.PLAYER
 			hurtSprite = "mechHurt"
 			idleSprite = "mechIdle"
 			shootSprite = "mechShoot"
@@ -121,6 +129,7 @@ func _ready() -> void:
 			_shadow_sprite.position.y = 64
 
 		_UnitClass.ENEMYMECH:
+			commander = Global.turnTakers.ENEMY
 			hurtSprite = "enemyMechHurt"
 			idleSprite = "enemyMechIdle"
 			shootSprite = "enemyMechShoot"
@@ -145,6 +154,7 @@ func _ready() -> void:
 			_shadow_sprite.scale = Vector2(4, 4)
 			_shadow_sprite.position.y = 64
 		_UnitClass.CARRIER:
+			commander = Global.turnTakers.PLAYER
 			hurtSprite = "carrierHurt"
 			idleSprite = "carrierIdle"
 			shootSprite = "carrierShoot"
@@ -169,6 +179,7 @@ func _ready() -> void:
 			_shadow_sprite.scale = Vector2(1, 1)
 			_shadow_sprite.position.y = 64
 		_UnitClass.ENEMYTURRET:
+			commander = Global.turnTakers.ENEMY
 			_sprite.position.y = -32
 			hurtSprite = "enemyTurretHurt"
 			idleSprite = "enemyTurretIdle"
@@ -218,18 +229,21 @@ func _process(delta: float) -> void:
 	if _path_follow.progress_ratio >= 1.0:
 		statsController.stats.currentMovementRange -= (unitPath.current_path.size() - 1)
 		self.isWalking = false
-		_path_follow.progress = 0.0
+#		zero length interval error if we go to 0.0, but documentation says that's the default... idk, this works for now
+		_path_follow.set_progress(0.01)
 		position = grid.calculate_map_position(cell)
 		curve.clear_points()
-		emit_signal("walk_finished")
+		actionPoints -= 1
+		print("actionPoints ", actionPoints)
+		emit_signal("walk_finished", actionPoints)
 		audioMove.stop()
-		if hasActed:
-			print("TURN FINISHED")
-			emit_signal("turn_finished")
+	if turnTracker.currentTurnTaker == commander:
+		if actionPoints == 0 && !disabled:
+			end_turn()
 
 
 func walk_along(path: PackedVector2Array) -> void:
-	print("path", path)
+	#print("path: ", path)
 	if path.is_empty():
 		return
 
@@ -252,6 +266,14 @@ func set_is_selected(value: bool) -> void:
 		audioSelect.play()
 	else:
 		_anim_player.play("idle")
+
+
+func set_disabled(value: bool) -> void:
+	disabled = value
+
+func end_turn() -> void:
+	emit_signal("turn_finished")
+	set_disabled(true)
 
 
 #func set_skin(value: Texture) -> void:
@@ -290,6 +312,12 @@ func hurt_finished():
 
 func attack_finished() -> void:
 	_sprite.play(idleSprite)
-	hasActed = true
 
 #TODO: add disable state, reset hasActed and currentMovement and all that so units can be disabled when they've already acted
+
+
+func _on_turn_tracker_new_round():
+	print("resetting unit!")
+	set_disabled(false)
+	actionPoints = 3
+	statsController.stats.currentMovementRange = statsController.stats.maxMovementRange

@@ -58,14 +58,6 @@ stream = ExtResource("8_afvp5")
 volume_db = -11.32
 autoplay = true
 
-[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit" method="_on_turn_tracker_new_round"]
-[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit2" method="_on_turn_tracker_new_round"]
-[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit3" method="_on_turn_tracker_new_round"]
-[connection signal="new_round" from="TurnTracker" to="GameBoard/Unit4" method="_on_turn_tracker_new_round"]
 [connection signal="turn_finished" from="GameBoard/Unit" to="TurnTracker" method="_on_unit_turn_finished"]
 [connection signal="accept_pressed" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_accept_pressed"]
 [connection signal="moved" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_moved"]
-[connection signal="skip_turn" from="GameBoard/Cursor" to="GameBoard" method="_on_cursor_skip_turn"]
-[connection signal="turn_finished" from="GameBoard/Unit2" to="TurnTracker" method="_on_unit_turn_finished"]
-[connection signal="turn_finished" from="GameBoard/Unit3" to="TurnTracker" method="_on_unit_turn_finished"]
-[connection signal="turn_finished" from="GameBoard/Unit4" to="TurnTracker" method="_on_unit_turn_finished"]

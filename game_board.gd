@@ -12,6 +12,7 @@ extends Node2D
 @onready var _target_overlay: TargetOverlay = $TargetOverlay
 @onready var tileMap: TileMap = $"../TileMap"
 @onready var cursor: Node2D = $Cursor
+@onready var turnTracker: Node2D = $"../TurnTracker"
 
 # This constant represents the directions in which a unit can move on the board. We will reference
 # the constant later in the script.
@@ -46,8 +47,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	_reinitialize()
-	if _units.has(cursor.cell):
+	#_reinitialize()
+	if _hovered_unit && _units.has(cursor.cell):
 		_hovered_unit = _units[cursor.cell]
 		cursor.targetSprite.visible = false
 		_hovered_unit.baseHighlighter.visible = true
@@ -66,6 +67,9 @@ func is_occupied(cell: Vector2) -> bool:
 # Clears, and refills the `_units` dictionary with game objects that are on the board.
 func _reinitialize() -> void:
 	_units.clear()
+	print("reinitialize")
+
+	turnTracker.resetNumberOfUnits()
 
 	# we loop over the node's children and filter them to find the units. As your game
 	# becomes more complex, you may want to use the node group feature instead to place your units
@@ -80,10 +84,11 @@ func _reinitialize() -> void:
 		# and a reference to the unit for the value. This allows us to access a unit given its grid
 		# coordinates.
 		_units[unit.cell] = unit
-#		todo add rect cells
-		#print("unit.base", unit.base)
+		turnTracker.addUnits(1)
+
 		for baseCell in unit.base:
 			_units[baseCell] = unit
+	print("reinit active unit = ", _active_unit)
 
 func removeCellsFromList(excludeList: Array, originList: Array) -> Array:
 	for cellToExclude in excludeList:
@@ -132,11 +137,11 @@ func _flood_fill(anchorCell: Vector2, max_distance: int, isForAttacking: bool = 
 		var tileData = tileMap.get_cell_tile_data(0, current)
 		var isWalkable = false
 		var unit = _units[anchorCell]
-		if unit.unitClass ==Global.UnitClass.INFANTRY:
+		if unit.unitClass == Global.UnitClass.INFANTRY:
 			isWalkable = tileData != null && tileData.get_custom_data("isSmallUnitWalkable")
 		elif unit.unitClass == Global.UnitClass.MECH:
 			isWalkable = tileData != null && tileData.get_custom_data("isMedUnitWalkable")
-		elif unit.unitClass ==Global.UnitClass.CARRIER:
+		elif unit.unitClass == Global.UnitClass.CARRIER:
 			isWalkable = tileData != null && tileData.get_custom_data("isBigUnitWalkable")
 		if !isWalkable:
 			continue
@@ -151,7 +156,7 @@ func _flood_fill(anchorCell: Vector2, max_distance: int, isForAttacking: bool = 
 			var coordinates: Vector2 = current + direction
 			# This is an "optimization". It does the same thing as our `if current in array:` above
 			# but repeating it here with the neighbors skips some instructions.
-			if is_occupied(coordinates) && _units[coordinates] != _units[anchorCell]:
+			if is_occupied(coordinates) && is_occupied(anchorCell) && _units[coordinates] != _units[anchorCell]:
 				# this next stuff just marks the tiles around that unit for exclusion from the flood fill
 				# this prevents larger units from visually hiding smaller units
 				var individualExclusionZone = grid.makeCellSquare(coordinates, _units[anchorCell].size)
@@ -187,11 +192,11 @@ func _flood_fill(anchorCell: Vector2, max_distance: int, isForAttacking: bool = 
 	var finalFilterList := []
 	for floodCell in array:
 		var floodPath: PackedVector2Array = _pathfinder.calculate_point_path(anchorCell, floodCell)
-		print('floodpath size for cell ', floodCell, ' = ', floodPath.size())
-		if floodCell == Vector2(32, 18):
-			print('floodpath = ', floodPath)
+		#print('floodpath size for cell ', floodCell, ' = ', floodPath.size())
+		#if floodCell == Vector2(32, 18):
+			#print('floodpath = ', floodPath)
 		if floodPath.size() == 0:
-			print("no floodpath found", anchorCell)
+			#print("no floodpath found", anchorCell)
 			finalFilterList.append(floodCell)
 	return array.filter(func(potentiallyYuckyTile): return !finalFilterList.has(potentiallyYuckyTile))
 
@@ -204,8 +209,9 @@ func _select_active_unit(cell: Vector2) -> void:
 	# registered in the `cell`.
 	if not _units.has(cell):
 		return
-
-	if _units[cell].isPlayerControllable:
+#todo: fix previously freed error on next line when clicking on tile after the occupant dies
+	if is_occupied(cell) && _units[cell].isPlayerControllable && _units[cell].actionPoints > 0:
+		print("can control")
 		# When selecting a unit, we turn on the overlay and path drawing. We could use signals on the
 		# unit itself to do so, but that would split the logic between several files without a big
 		# maintenance benefit and we'd need to pass extra data to the unit.
@@ -213,13 +219,15 @@ func _select_active_unit(cell: Vector2) -> void:
 		# in one place. I find it easy to keep track of what the class does this way.
 		_active_unit = _units[cell]
 		_unit_base = _units[cell].base
-		_active_unit.isSelected = true
+		_active_unit.set_is_selected(true)
 		_walkable_cells = get_walkable_cells(_active_unit)
 		_unit_overlay.draw(_walkable_cells)
 		_targetable_cells = get_targetable_cells(_active_unit)
 		_target_overlay.draw(_targetable_cells)
 		var _pathable_cells = get_walkable_cells(_active_unit)
 		_unit_path.initialize(_pathable_cells)
+	elif _units[cell].isPlayerControllable:
+		_units[cell].set_disabled(true)
 
 func _select_target_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
@@ -227,6 +235,9 @@ func _select_target_unit(cell: Vector2) -> void:
 	if not _units.has(cell):
 		return
 	if _units[cell].isPlayerControllable == true:
+		return
+	if _active_unit.actionPoints <= 0:
+		print("select unit action points = ", _active_unit.actionPoints)
 		return
 
 #	We check the distance from any cell in the base of the target to the active units cell
@@ -247,6 +258,9 @@ func _select_target_unit(cell: Vector2) -> void:
 		combatInstance.attacker = _active_unit
 		combatInstance.defender = _units[cell]
 		add_child(combatInstance)
+		_active_unit.actionPoints -= 1
+		if (_active_unit.actionPoints <= 0):
+			_active_unit.end_turn()
 		_deselect_active_unit()
 		_clear_active_unit()
 	elif distance <= meleeRange:
@@ -256,14 +270,18 @@ func _select_target_unit(cell: Vector2) -> void:
 		combatInstance.attacker = _active_unit
 		combatInstance.defender = _units[cell]
 		add_child(combatInstance)
+		_active_unit.actionPoints -= 1
+		if (_active_unit.actionPoints <= 0):
+			_active_unit.end_turn()
 		_deselect_active_unit()
 		_clear_active_unit()
 
 # Deselects the active unit, clearing the cells overlay and interactive path drawing.
 # We need it for the `_move_active_unit()` function below, and we'll use it again in a moment.
 func _deselect_active_unit() -> void:
-	_active_unit.isSelected = false
+	print("deselect")
 	_unit_overlay.clear()
+	_active_unit.set_is_selected(false)
 	_target_overlay.clear()
 	_unit_path.stop()
 
@@ -278,7 +296,8 @@ func _clear_active_unit() -> void:
 # Updates the _units dictionary with the target position for the unit and asks the _active_unit to
 # walk to it.
 func _move_active_unit(new_cell: Vector2) -> void:
-	if (is_occupied(new_cell) && _units[new_cell] != _active_unit) or not new_cell in _walkable_cells:
+	if _active_unit.actionPoints <= 0 or (is_occupied(new_cell) && _units[new_cell] != _active_unit) or not new_cell in _walkable_cells:
+		print("move unit action points = ", _active_unit.actionPoints)
 		return
 
 	# When moving a unit, we need to update our `_units` dictionary. We instantly save it in the
@@ -294,12 +313,14 @@ func _move_active_unit(new_cell: Vector2) -> void:
 	await _active_unit.walk_finished
 	_reinitialize()
 	# Finally, we clear the `_active_unit`, which also clears the `_walkable_cells` array.
+	#if _active_unit.actionPoints <= 0:
 	_clear_active_unit()
 
 # Updates the interactive path's drawing if there's an active and selected unit.
 func _on_cursor_moved(new_cell: Vector2) -> void:
 	# When the cursor moves, and we already have an active unit selected, we want to update the
 	# interactive path drawing.
+#	HEEEEEERE
 	if _active_unit and _active_unit.isSelected:
 		_unit_path.draw(_active_unit.cell, new_cell)
 
@@ -308,26 +329,30 @@ func _on_cursor_accept_pressed(cell: Vector2) -> void:
 	# The cursor's "accept_pressed" means that the player wants to interact with a cell. Depending
 	# on the board's current state, this interaction means either that we want to select a unit all
 	# that we want to give it a move order.
-	print("active unit", _active_unit)
-	if not _active_unit:
-		_select_active_unit(cell)
-	elif _active_unit.isSelected:
-		print("is_occupied(cell) = ", is_occupied(cell))
-		if is_occupied(cell) && _units[cell] != _active_unit:
-			print('selecting target', _units[cell])
-			_select_target_unit(cell)
-			return
-		if _active_unit.cell != cell:
-			print("_active_unit.cell", _active_unit.cell)
-			print("cell", cell)
-			print("CELL IS NOT ACTIVE UNIT")
-			_move_active_unit(cell)
+	print("turn taker: ", turnTracker.currentTurnTaker)
+	if turnTracker.currentTurnTaker == Global.turnTakers.PLAYER:
+		print("active unit: ", _active_unit)
+		if not _active_unit:
+			_select_active_unit(cell)
+		elif _active_unit.isSelected and _active_unit.actionPoints > 0:
+			print("elif ap= ", _active_unit.actionPoints)
+			if is_occupied(cell) && _units[cell] != _active_unit:
+				print("selecting...")
+				_select_target_unit(cell)
+				return
+			if _active_unit.cell != cell:
+				print("move")
+				_move_active_unit(cell)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _active_unit and event.is_action_pressed("ui_cancel"):
+	if _active_unit and event.is_action_pressed("ui_cancel") && _active_unit.actionPoints == 3:
 		_deselect_active_unit()
 		_clear_active_unit()
 
 
 func _on_unit_base_updated():
 	_reinitialize()
+
+
+func _on_cursor_skip_turn():
+	turnTracker._on_unit_turn_finished()
