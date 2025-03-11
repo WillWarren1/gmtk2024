@@ -17,3 +17,6 @@ mono_crash.*.json
 
 # external editor ignores
 .vscode
+
+# temporary files? don't think these are needed
+.tmp
