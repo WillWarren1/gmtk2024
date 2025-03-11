@@ -19,4 +19,4 @@ mono_crash.*.json
 .vscode
 
 # temporary files? don't think these are needed
-.tmp
+*.tmp
