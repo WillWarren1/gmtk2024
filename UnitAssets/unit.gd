@@ -3,6 +3,7 @@ extends Path2D
 
 signal walk_finished
 signal turn_finished
+signal unit_death
 
 @export var grid: Resource = preload("res://Grid.tres")
 #@export var skin: Texture: set = set_skin
@@ -270,6 +271,10 @@ func set_is_selected(value: bool) -> void:
 
 func set_disabled(value: bool) -> void:
 	disabled = value
+	if disabled:
+		_anim_player.play("disabled")
+	else:
+		_anim_player.play("idle")
 
 func end_turn() -> void:
 	emit_signal("turn_finished")
@@ -305,6 +310,7 @@ func hurt(damage):
 	if statsController.stats.currentHealth > 0:
 		hurtTimer.start()
 	else:
+		emit_signal("unit_death")
 		queue_free()
 
 func hurt_finished():

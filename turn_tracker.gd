@@ -74,3 +74,7 @@ func _on_unit_turn_finished():
 	else:
 		print("new turn")
 		startNewTurn()
+
+
+func _on_unit_unit_death() -> void:
+	pass # Replace with function body.

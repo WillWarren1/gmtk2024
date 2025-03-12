@@ -55,7 +55,7 @@ func _process(_delta: float) -> void:
 	else:
 		if !cursor.targetSprite.visible:
 			cursor.targetSprite.visible = true
-		if _hovered_unit && is_instance_valid(_hovered_unit) && _hovered_unit.baseHighlighter.visible:
+		if _hovered_unit && is_instance_valid(_hovered_unit) && !_hovered_unit.is_queued_for_deletion() && _hovered_unit.baseHighlighter.visible:
 			_hovered_unit.baseHighlighter.visible = false
 		_hovered_unit = null
 
@@ -75,20 +75,21 @@ func _reinitialize() -> void:
 	# becomes more complex, you may want to use the node group feature instead to place your units
 	# anywhere in the scene tree.
 	for child in get_children():
-		# We can use the "as" keyword to cast the child to a given type. If the child is not of type
-		# Unit, the variable will be null.
-		var unit := child as Unit
-		if not unit:
-			continue
-		# As mentioned when introducing the units variable, we use the grid coordinates for the key
-		# and a reference to the unit for the value. This allows us to access a unit given its grid
-		# coordinates.
-		_units[unit.cell] = unit
-		turnTracker.addUnits(1)
+		if is_instance_valid(child) && !child.is_queued_for_deletion(): 
+			# We can use the "as" keyword to cast the child to a given type. If the child is not of type
+			# Unit, the variable will be null.
+			var unit := child as Unit
+			if not unit:
+				continue
+			# As mentioned when introducing the units variable, we use the grid coordinates for the key
+			# and a reference to the unit for the value. This allows us to access a unit given its grid
+			# coordinates.
+			_units[unit.cell] = unit
+			turnTracker.addUnits(1)
 
-		for baseCell in unit.base:
-			_units[baseCell] = unit
-	print("reinit active unit = ", _active_unit)
+			for baseCell in unit.base:
+				_units[baseCell] = unit
+			print("reinit active unit = ", _active_unit)
 
 func removeCellsFromList(excludeList: Array, originList: Array) -> Array:
 	for cellToExclude in excludeList:
@@ -156,7 +157,7 @@ func _flood_fill(anchorCell: Vector2, max_distance: int, isForAttacking: bool = 
 			var coordinates: Vector2 = current + direction
 			# This is an "optimization". It does the same thing as our `if current in array:` above
 			# but repeating it here with the neighbors skips some instructions.
-			if is_occupied(coordinates) && is_occupied(anchorCell) && _units[coordinates] != _units[anchorCell]:
+			if is_occupied(coordinates) && is_occupied(anchorCell) && is_instance_valid(_units[coordinates]) && !_units[coordinates].is_queued_for_deletion() && is_instance_valid(_units[anchorCell]) && !_units[anchorCell].is_queued_for_deletion() && _units[coordinates] != _units[anchorCell]:
 				# this next stuff just marks the tiles around that unit for exclusion from the flood fill
 				# this prevents larger units from visually hiding smaller units
 				var individualExclusionZone = grid.makeCellSquare(coordinates, _units[anchorCell].size)
@@ -210,71 +211,74 @@ func _select_active_unit(cell: Vector2) -> void:
 	if not _units.has(cell):
 		return
 #todo: fix previously freed error on next line when clicking on tile after the occupant dies
-	if is_occupied(cell) && _units[cell].isPlayerControllable && _units[cell].actionPoints > 0:
-		print("can control")
-		# When selecting a unit, we turn on the overlay and path drawing. We could use signals on the
-		# unit itself to do so, but that would split the logic between several files without a big
-		# maintenance benefit and we'd need to pass extra data to the unit.
-		# I decided to group everything in the GameBoard class because it keeps all the selection logic
-		# in one place. I find it easy to keep track of what the class does this way.
-		_active_unit = _units[cell]
-		_unit_base = _units[cell].base
-		_active_unit.set_is_selected(true)
-		_walkable_cells = get_walkable_cells(_active_unit)
-		_unit_overlay.draw(_walkable_cells)
-		_targetable_cells = get_targetable_cells(_active_unit)
-		_target_overlay.draw(_targetable_cells)
-		var _pathable_cells = get_walkable_cells(_active_unit)
-		_unit_path.initialize(_pathable_cells)
-	elif _units[cell].isPlayerControllable:
-		_units[cell].set_disabled(true)
+	if is_occupied(cell) && is_instance_valid(_units[cell]) && !_units[cell].is_queued_for_deletion():
+		if _units[cell].isPlayerControllable && _units[cell].actionPoints > 0:
+			print("can control")
+			# When selecting a unit, we turn on the overlay and path drawing. We could use signals on the
+			# unit itself to do so, but that would split the logic between several files without a big
+			# maintenance benefit and we'd need to pass extra data to the unit.
+			# I decided to group everything in the GameBoard class because it keeps all the selection logic
+			# in one place. I find it easy to keep track of what the class does this way.
+			_active_unit = _units[cell]
+			_unit_base = _units[cell].base
+			_active_unit.set_is_selected(true)
+			_walkable_cells = get_walkable_cells(_active_unit)
+			_unit_overlay.draw(_walkable_cells)
+			_targetable_cells = get_targetable_cells(_active_unit)
+			_target_overlay.draw(_targetable_cells)
+			var _pathable_cells = get_walkable_cells(_active_unit)
+			_unit_path.initialize(_pathable_cells)
+		elif _units[cell].isPlayerControllable:
+			_units[cell].set_disabled(true)
 
 func _select_target_unit(cell: Vector2) -> void:
 	# Here's some optional defensive code: we return early from the function if the unit's not
 	# registered in the `cell`.
 	if not _units.has(cell):
 		return
-	if _units[cell].isPlayerControllable == true:
+	if is_instance_valid(_units[cell]) && !_units[cell].is_queued_for_deletion() && _units[cell].isPlayerControllable == true:
 		return
-	if _active_unit.actionPoints <= 0:
+	if is_instance_valid(_active_unit) && !_active_unit.is_queued_for_deletion() && _active_unit.actionPoints <= 0:
 		print("select unit action points = ", _active_unit.actionPoints)
 		return
 
-#	We check the distance from any cell in the base of the target to the active units cell
-	var baseCellDistances = []
-	for baseCell in _units[cell].base:
-		var distanceToBaseCell = floor(baseCell.distance_to(_active_unit.cell))
-		baseCellDistances.append(distanceToBaseCell)
+	if is_instance_valid(_units[cell]) && !_units[cell].is_queued_for_deletion():
+	#	We check the distance from any cell in the base of the target to the active units cell
+		var baseCellDistances = []
+		for baseCell in _units[cell].base:
+			if is_instance_valid(_active_unit) && !_active_unit.is_queued_for_deletion():
+				var distanceToBaseCell = floor(baseCell.distance_to(_active_unit.cell))
+				baseCellDistances.append(distanceToBaseCell)
 
-	var distance = floor(baseCellDistances.min())
+				var distance = floor(baseCellDistances.min())
 
-	var weaponRange = _active_unit.statsController.stats.weaponRange
-	var meleeRange = _active_unit.statsController.stats.meleeRange
+				var weaponRange = _active_unit.statsController.stats.weaponRange
+				var meleeRange = _active_unit.statsController.stats.meleeRange
 
-	if distance <= weaponRange && distance > meleeRange:
+				if distance <= weaponRange && distance > meleeRange:
 
-		var combatInstance = combatScene.instantiate()
-		combatInstance.position = get_viewport_rect().size / 2
-		combatInstance.attacker = _active_unit
-		combatInstance.defender = _units[cell]
-		add_child(combatInstance)
-		_active_unit.actionPoints -= 1
-		if (_active_unit.actionPoints <= 0):
-			_active_unit.end_turn()
-		_deselect_active_unit()
-		_clear_active_unit()
-	elif distance <= meleeRange:
-		print("within melee range")
-		var combatInstance = combatScene.instantiate()
-		combatInstance.position = get_viewport_rect().size / 2
-		combatInstance.attacker = _active_unit
-		combatInstance.defender = _units[cell]
-		add_child(combatInstance)
-		_active_unit.actionPoints -= 1
-		if (_active_unit.actionPoints <= 0):
-			_active_unit.end_turn()
-		_deselect_active_unit()
-		_clear_active_unit()
+					var combatInstance = combatScene.instantiate()
+					combatInstance.position = get_viewport_rect().size / 2
+					combatInstance.attacker = _active_unit
+					combatInstance.defender = _units[cell]
+					add_child(combatInstance)
+					_active_unit.actionPoints -= 1
+					if (_active_unit.actionPoints <= 0):
+						_active_unit.end_turn()
+					_deselect_active_unit()
+					_clear_active_unit()
+				elif distance <= meleeRange:
+					print("within melee range")
+					var combatInstance = combatScene.instantiate()
+					combatInstance.position = get_viewport_rect().size / 2
+					combatInstance.attacker = _active_unit
+					combatInstance.defender = _units[cell]
+					add_child(combatInstance)
+					_active_unit.actionPoints -= 1
+					if (_active_unit.actionPoints <= 0):
+						_active_unit.end_turn()
+					_deselect_active_unit()
+					_clear_active_unit()
 
 # Deselects the active unit, clearing the cells overlay and interactive path drawing.
 # We need it for the `_move_active_unit()` function below, and we'll use it again in a moment.
@@ -356,3 +360,8 @@ func _on_unit_base_updated():
 
 func _on_cursor_skip_turn():
 	turnTracker._on_unit_turn_finished()
+
+
+func _on_unit_unit_death() -> void:
+	print("dead!")
+	_reinitialize()
