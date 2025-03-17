@@ -182,6 +182,8 @@ func _process(delta):
 				step = 11
 				counter = 36
 		11:
+			if attacker.actionPoints <= 0:
+				attacker.set_disabled(true)
 			queue_free()
 			pass
 

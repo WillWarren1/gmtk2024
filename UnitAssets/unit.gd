@@ -277,6 +277,7 @@ func set_disabled(value: bool) -> void:
 		_anim_player.play("idle")
 
 func end_turn() -> void:
+	print('finishing turn')
 	emit_signal("turn_finished")
 	set_disabled(true)
 
